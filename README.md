@@ -1,2 +1,2 @@
-# SO-SIMULATOR
-SO scheduler and memory management simulator.
+# OS-SIMULATOR
+OS scheduler and memory management simulator.
