@@ -1,5 +1,5 @@
-export class Process {
-    constructor(arrive, executionTime, deadline, priorioty){
+export default class Process {
+    constructor(arrive, executionTime, deadline, priority){
         this.arrive = arrive,
         this.executionTime = executionTime,
         this.deadline = deadline,

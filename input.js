@@ -9,24 +9,6 @@ function createProcess(n_processo) {
     let container = document.getElementById("processos");
     let form = document.createElement("p");
     form.classList.add("container","forms","shadow");
-    form.innerHTML = "            <p class='h3 title-2'>Processo 2</p>
-    <br>
-    <div class='mb-3'>
-        <label for='name' class='form-label'>Tempo de Chegada</label>
-        <input type='number' class='form-control' id='name' placeholder='' required>
-    </div>
-    <div class='mb-3'>
-        <label for='institute' class='form-label'>Tempo de Execução</label>
-        <input type='number' class='form-control' id='institute' placeholder='' required>
-    </div>
-    <div class='mb-3'>
-        <label for='institute' class='form-label'>Deadline</label>
-        <input type='number' class='form-control' id='institute" placeholder='' required>
-    </div>
-    <div class="mb-3">
-        <label for="institute" class="form-label">Prioridade</label>
-        <input type="number" class="form-control" id="institute" placeholder='' required>
-    </div>";
     container.appendChild(form);
 
 
