@@ -1,13 +1,5 @@
 import Process from './process.js'
 
-let processo1 {
-    (1,2),(3,7),(8,9)
-}
-
-let processo2 {
-    (1,2),(3,7),(8,9)
-}
-
 function FIFO(processes, quantum, overload) {
     /*
     processes = array da estrutura de dados process
@@ -23,11 +15,6 @@ function FIFO(processes, quantum, overload) {
     }
 
     var media = soma/processes.length;
-
-    var temposProcess1 = []
-    temposProcess1.append([x1,x2])
-
-    console.log(temposProcess1)
 }
 
 function SJF(processes, quantum, overload) {
@@ -58,27 +45,16 @@ function EDF(processes, quantum, overload) {
     /*
     processes = array da estrutura de dados process
     */
-    processes.sort((x, y) => {
-        return x.deadline - y.deadline;
-    });
-
-    var soma = 0;
-
-    for(var i of processes){
-        soma += soma + i.arrive;
-    }
-
-    var media = soma/processes.length;
 
 }
 
-var a = new Process()
-var b = new Process()
-var c = new Process()
-var d = new Process()
+var a = new Process(0, 1, 2, 3);
+var b = new Process(1, 2, 3, 4);
+var c = new Process(2, 3, 4, 5);
+var d = new Process(3, 4, 5, 6);
 
-quantum = 
-overload = 
+var quantum = 10
+var overload = 10
 
 FIFO([a,b,c,d], quantum, overload)
 EDF()
