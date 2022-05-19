@@ -1,4 +1,4 @@
-import Process from './process.js'
+import Process from './process/process.js';
 
 function FIFO(processes, quantum, overload) {
     /*
