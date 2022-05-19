@@ -5,4 +5,20 @@ export default class Process {
         this.deadline = deadline,
         this.priority = priority
     }
+
+    get arrive () {
+        return this.arrive;
+    }
+
+    get executionTime () {
+        return this.executionTime;
+    }
+
+    get deadline () {
+        return this.deadline;
+    }
+
+    get priority () {
+        return this.priority;
+    }
 }

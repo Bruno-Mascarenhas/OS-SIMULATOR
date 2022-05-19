@@ -1,20 +1,52 @@
 import Process from './process/process.js';
 
 function FIFO(processes, quantum, overload) {
-    /*
-    processes = array da estrutura de dados process
-    */
+    //Nesse caso o quantum e o overload não são necessários.
+    //Ordena os processos por tempo de chegada
     processes.sort((x, y) => {
         return x.arrive - y.arrive;
     });
 
-    var soma = 0;
+    //variáveis para a posição inicial e final de cada processo
+    var processTime = [];
+    var aux1, aux2;
+    //parciais para calcular o turnaround médio
+    var partial = [];
 
     for(var i of processes){
-        soma += soma + i.arrive;
+        if(i == 0){
+            aux1 = processes[i].arrive;
+            aux2 = aux1 + processes[i].executionTime;
+            partial.append(processes[i].executionTime); //adiciona o turnaround do primeiro processo no array
+            processTime.append([aux1,aux2]) //adiciona as cordenadas do primeiro processo no array
+        } else { 
+            //variável para armazenar o tempo de chegada do processo
+            var aux3 = processes[i].arrive();
+            if(aux3 <= aux2) { //quando o proximo processo está em espera
+                aux1 = aux2;
+                aux2 = aux1 + processes[i].executionTime;
+            } else { //quando o processo anterior termina antes do atual chegar
+                aux1 = processes[i].arrive;
+                aux2 = aux1 + processes[i].executionTime;
+            }
+            //adicionando coordenadas do processo no array
+            processTime.append([aux1,aux2]);
+            //adiciona o turnaround do processo no array
+            partial.append(processTime[i].executionTime + partial[i-1]);
+        }
     }
 
-    var media = soma/processes.length;
+    //soma todos os valores do array partial
+    var sum = partial.reduce(function(sum,i){
+        return sum + i;
+    });
+
+    //turnaround médio
+    var turnaround = sum/processes.length;
+
+    console.log(sum);
+    console.log(processTime);
+    console.log(turnaround);
 }
 
 function SJF(processes, quantum, overload) {
@@ -48,13 +80,12 @@ function EDF(processes, quantum, overload) {
 
 }
 
-var a = new Process(0, 1, 2, 3);
-var b = new Process(1, 2, 3, 4);
-var c = new Process(2, 3, 4, 5);
-var d = new Process(3, 4, 5, 6);
+var a = new Process(1,4,0,0);
+var b = new Process(5,2,0,1);
+var c = new Process(7,4,0,2);
+var d = new Process(12,1,0,3);
 
-var quantum = 10
-var overload = 10
+var quantum = 0;
+var overload = 0;
 
-FIFO([a,b,c,d], quantum, overload)
-EDF()
+FIFO([a,b,c,d]);
