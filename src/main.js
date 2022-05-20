@@ -88,4 +88,6 @@ var d = new Process(12,1,0,3);
 var quantum = 0;
 var overload = 0;
 
+console.log(a,b,c,d)
+
 FIFO([a,b,c,d]);
