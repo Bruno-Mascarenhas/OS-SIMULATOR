@@ -13,15 +13,15 @@ function FIFO(processes, quantum, overload) {
     //parciais para calcular o turnaround médio
     var partial = [];
 
-    for(var i of processes){
+    for(var i=0; i<processes.length; i++){
         if(i == 0){
             aux1 = processes[i].arrive;
             aux2 = aux1 + processes[i].executionTime;
-            partial.append(processes[i].executionTime); //adiciona o turnaround do primeiro processo no array
-            processTime.append([aux1,aux2]) //adiciona as cordenadas do primeiro processo no array
+            partial.push(processes[i].executionTime); //adiciona o turnaround do primeiro processo no array
+            processTime.push([aux1,aux2]) //adiciona as cordenadas do primeiro processo no array
         } else { 
             //variável para armazenar o tempo de chegada do processo
-            var aux3 = processes[i].arrive();
+            var aux3 = processes[i].arrive;
             if(aux3 <= aux2) { //quando o proximo processo está em espera
                 aux1 = aux2;
                 aux2 = aux1 + processes[i].executionTime;
@@ -30,9 +30,9 @@ function FIFO(processes, quantum, overload) {
                 aux2 = aux1 + processes[i].executionTime;
             }
             //adicionando coordenadas do processo no array
-            processTime.append([aux1,aux2]);
+            processTime.push([aux1,aux2]);
             //adiciona o turnaround do processo no array
-            partial.append(processTime[i].executionTime + partial[i-1]);
+            partial.push(processTime[i].executionTime + partial[i-1]);
         }
     }
 
