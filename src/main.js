@@ -1,8 +1,8 @@
-import Process from './process.js'
+import Process from './process/process.js';
 
-function FIFO(processes) {
-   //Nesse caso o quantum e o overload não são necessários.
-   //Ordena os processos por tempo de chegada
+function FIFO(processes, quantum, overload) {
+    //Nesse caso o quantum e o overload não são necessários.
+    //Ordena os processos por tempo de chegada
     processes.sort((x, y) => {
         return x.arrive - y.arrive;
     });
@@ -13,15 +13,15 @@ function FIFO(processes) {
     //parciais para calcular o turnaround médio
     var partial = [];
 
-    for(var i of processes){
+    for(var i=0; i<processes.length; i++){
         if(i == 0){
             aux1 = processes[i].arrive;
             aux2 = aux1 + processes[i].executionTime;
-            partial.append(processes[i].executionTime); //adiciona o turnaround do primeiro processo no array
-            processTime.append([aux1,aux2]) //adiciona as cordenadas do primeiro processo no array
+            partial.push(processes[i].executionTime); //adiciona o turnaround do primeiro processo no array
+            processTime.push([aux1,aux2]) //adiciona as cordenadas do primeiro processo no array
         } else { 
             //variável para armazenar o tempo de chegada do processo
-            var aux3 = processes[i].arrive();
+            var aux3 = processes[i].arrive;
             if(aux3 <= aux2) { //quando o proximo processo está em espera
                 aux1 = aux2;
                 aux2 = aux1 + processes[i].executionTime;
@@ -30,9 +30,9 @@ function FIFO(processes) {
                 aux2 = aux1 + processes[i].executionTime;
             }
             //adicionando coordenadas do processo no array
-            processTime.append([aux1,aux2]);
+            processTime.push([aux1,aux2]);
             //adiciona o turnaround do processo no array
-            partial.append(processTime[i].executionTime + partial[i-1]);
+            partial.push(processTime[i].executionTime + partial[i-1]);
         }
     }
 
@@ -44,11 +44,9 @@ function FIFO(processes) {
     //turnaround médio
     var turnaround = sum/processes.length;
 
-    console,log("Turnarounds parciais: ",partial);
-    console.log("Soma: ",sum);
-    console.log("Quantidade de processos: ",processes.length);
-    console.log("Coordenadas dos processos: ",processTime);
-    console.log("Turnaround médio: ",turnaround);
+    console.log(sum);
+    console.log(processTime);
+    console.log(turnaround);
 }
 
 function SJF(processes, quantum, overload) {
@@ -61,9 +59,8 @@ function SJF(processes, quantum, overload) {
 
     var soma = 0;
 
-    for(var i in processes){
-        
-        soma += soma + processes[i].arrive;
+    for(var i of processes){
+        soma += soma + i.arrive;
     }
 
     var media = soma/processes.length;
@@ -80,17 +77,6 @@ function EDF(processes, quantum, overload) {
     /*
     processes = array da estrutura de dados process
     */
-    processes.sort((x, y) => {
-        return x.deadline - y.deadline;
-    });
-
-    var soma = 0;
-
-    for(var i of processes){
-        soma += soma + i.arrive;
-    }
-
-    var media = soma/processes.length;
 
 }
 
@@ -102,5 +88,6 @@ var d = new Process(12,1,0,3);
 var quantum = 0;
 var overload = 0;
 
+console.log(a,b,c,d)
+
 FIFO([a,b,c,d]);
-//EDF()
