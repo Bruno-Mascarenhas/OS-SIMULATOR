@@ -13,26 +13,26 @@ function FIFO(processes, quantum, overload) {
     //parciais para calcular o turnaround médio
     var partial = [];
 
-    for(var i=0; i<processes.length; i++){
+    for(var i = 0; i<processes.length; i++){
         if(i == 0){
             aux1 = processes[i].arrive;
             aux2 = aux1 + processes[i].executionTime;
             partial.push(processes[i].executionTime); //adiciona o turnaround do primeiro processo no array
             processTime.push([aux1,aux2]) //adiciona as cordenadas do primeiro processo no array
         } else { 
-            //variável para armazenar o tempo de chegada do processo
-            var aux3 = processes[i].arrive;
-            if(aux3 <= aux2) { //quando o proximo processo está em espera
+            if(processes[i].arrive <= aux2) { //quando o proximo processo está em espera
                 aux1 = aux2;
                 aux2 = aux1 + processes[i].executionTime;
+                //adiciona o turnaround do processo no array
+                partial.push(processes[i].executionTime + partial[i-1]);
             } else { //quando o processo anterior termina antes do atual chegar
                 aux1 = processes[i].arrive;
                 aux2 = aux1 + processes[i].executionTime;
+                //adiciona o turnaround do processo no array
+                partial.push(processes[i].executionTime + partial[i-1]);
             }
             //adicionando coordenadas do processo no array
             processTime.push([aux1,aux2]);
-            //adiciona o turnaround do processo no array
-            partial.push(processTime[i].executionTime + partial[i-1]);
         }
     }
 
@@ -44,9 +44,10 @@ function FIFO(processes, quantum, overload) {
     //turnaround médio
     var turnaround = sum/processes.length;
 
-    console.log(sum);
-    console.log(processTime);
-    console.log(turnaround);
+    console.log("Partial: ",partial);
+    console.log("Sum: ",sum);
+    console.log("Procees Time: ",processTime);
+    console.log("Trunaround: ",turnaround);
 }
 
 function SJF(processes, quantum, overload) {
@@ -88,6 +89,9 @@ var d = new Process(12,1,0,3);
 var quantum = 0;
 var overload = 0;
 
-console.log(a,b,c,d)
+console.log(a);
+console.log(b);
+console.log(c);
+console.log(d);
 
 FIFO([a,b,c,d]);
