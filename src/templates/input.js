@@ -1,35 +1,19 @@
-function createAllProcess(n_processos){
-    for (i = 0; i < n_processos; i++) {
-        createProcess(i);
-        console.log(i);
+const n_processos = document.getElementById('n-processos')
+n_processos.addEventListener('change', (e) => {
+    document.getElementById("processos").innerHTML="";
+    createAllFormProcess(e.target.value)
+});
+
+function createAllFormProcess(n_processos) {
+    for (i = 1; i <= n_processos; i++) {
+        createFormProcess(i);
     }
 }
 
-function createProcess(n_processo) {
+function createFormProcess(n_processo) {
     let container = document.getElementById("processos");
-    let form = document.createElement("p");
-    form.classList.add("container","forms","shadow");
-    container.appendChild(form);
-
-
-}
-
-function createTable(nRows) {
-    for (i = 0; i < nRows; i++) {
-        createRow(i,5);
-    }
-}
-
-function createRow(headName, nColumns) {
-    let table = document.getElementById("new");
-
-    let tableRow = document.createElement("tr");
-    let tableHead = document.createElement("th");
-    tableHead.innerHTML = headName;
-    tableRow.append(tableHead);
-    for (j = 0; j < nColumns; j++) {
-        let tableCell = document.createElement("td");
-        tableRow.appendChild(tableCell);
-        table.appendChild(tableRow);
-    }
+    let form = document.createElement("process-form");
+    form.setAttribute("n-processo", n_processo)
+    form.classList.add("m-2", "p-4", "shadow");
+    container.appendChild(form)
 }

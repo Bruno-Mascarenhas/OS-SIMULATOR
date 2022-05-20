@@ -55,5 +55,13 @@ function createRow(nProcesso) {
 
 function changeColor(nProcesso, tempo, cor) {
     document.getElementById(nProcesso + "." + tempo).style.backgroundColor = cor;
+    // document.getElementById("1.1").style.borderRightColor = "pink";
 }
+
+// const teste = document.querySelector('.teste')
+// fetch('test.html')
+// .then(res=>res.text())
+// .then(data=>{
+//     teste.innerHTML = data
+// })
 

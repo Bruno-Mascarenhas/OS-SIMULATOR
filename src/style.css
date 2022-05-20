@@ -1,12 +1,12 @@
 table,
 th,
 td {
-    border: 1px solid black;
+    border: 2px solid black;
     border-collapse: collapse;
 }
 
 td,th {
-    width: 2rem;
-    height: 2rem;
-    min-width: 2rem;
+    width: 4rem;
+    height: 4rem;
+    min-width: 4rem;
 }
