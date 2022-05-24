@@ -1,21 +1,17 @@
+import Process from '../process/process.js';
+import {FIFO,SJF,RoundRobin,EDF} from '../main.js'
+
+
+// Cria 1 formulario para cada processo
+// ******************************************************************
 const n_processos = document.getElementById('n-processos')
 n_processos.addEventListener('change', (e) => {
     document.getElementById("processos").innerHTML = "";
     createAllFormProcess(e.target.value)
 });
 
-document.getElementById('formInput').addEventListener('submit', (e) => {
-    e.preventDefault()
-    let data = Array.from(document.querySelectorAll('#formInput input')).reduce((acc, input) => ({ ...acc, [input.name]: input.value }), {});
-    let algoritimo = document.getElementById('algoritimo')
-    let value = algoritimo.options[algoritimo.selectedIndex].value;
-    console.log(value)
-    console.log(data)
-    start();
-})
-
 function createAllFormProcess(n_processos) {
-    for (i = 1; i <= n_processos; i++) {
+    for (let i = 1; i <= n_processos; i++) {
         createFormProcess(i);
     }
 }
@@ -27,10 +23,49 @@ function createFormProcess(n_processo) {
     form.classList.add("m-2", "p-4", "shadow");
     container.appendChild(form)
 }
+// ******************************************************************
+
+
+// Pega os dados ao clicar no botao simular
+document.getElementById('formInput').addEventListener('submit', (e) => {
+    e.preventDefault()
+    let data = Array.from(document.querySelectorAll('#formInput input')).reduce((acc, input) => ({ ...acc, [input.name]: input.value }), {});
+    let algoritimo = document.getElementById('algoritimo')
+    let value = algoritimo.options[algoritimo.selectedIndex].value;
+    //console.log(value)
+    //console.log(data)
+    let processos = []
+    for (let i = 1; i <= data.n_processos; i++) {
+        processos.push(new Process(+eval('data.chegada'+i),+eval('data.execucao'+i),+eval('data.deadline'+i),+eval('data.prioridade'+i)));
+        //processos.push(new Process(+i,+eval('data.chegada'+i),+eval('data.execucao'+i),+eval('data.deadline'+i),+eval('data.prioridade'+i)));
+    }
+
+    switch(value) {
+        case 'FIFO':
+            FIFO(processos)
+            break;
+        case 'SJF':
+            SJF(processos)
+            break;
+        case 'Round Robin':
+            RoundRobin(processos,data.quantum,data.sobrecarga)
+            break;
+        case 'EDF':
+            EDF(processos,data.quantum,data.sobrecarga)
+            break;
+    }
+    //console.log(processos)
+    start();
+})
+
+
+
+
 
 // Animação
 function start() {
     // Variaveis do sistema
+    // ************************************************
     let nProcessos = 4;
     const animatioDelay = 0.5;
 
@@ -46,7 +81,6 @@ function start() {
         [3, 'red'],
         [4, 'green'],
     ]
-
     // ************************************************
 
     let tempoTotal = time.length;
@@ -66,18 +100,19 @@ function start() {
     }
 
     function createTable() {
-        for (i = 1; i <= nProcessos; i++) {
-            createRow(i);
+        let table = document.getElementById("table");
+        table.innerHTML = "";
+        for (let i = 1; i <= nProcessos; i++) {
+            createRow(i,table);
         }
     }
 
-    function createRow(nProcesso) {
-        let table = document.getElementById("table");
+    function createRow(nProcesso,table) {
         let tableRow = document.createElement("tr");
         let tableHead = document.createElement("th");
         tableHead.innerHTML = nProcesso;
         tableRow.append(tableHead);
-        for (j = 1; j <= tempoTotal; j++) {
+        for (let j = 1; j <= tempoTotal; j++) {
             let tableCell = document.createElement("td");
             tableCell.setAttribute("id", nProcesso + "." + j);
             tableRow.appendChild(tableCell);
@@ -89,13 +124,6 @@ function start() {
         document.getElementById(nProcesso + "." + tempo).style.backgroundColor = cor;
         // document.getElementById("1.1").style.borderRightColor = "pink";
     }
-
-    // const teste = document.querySelector('.teste')
-    // fetch('test.html')
-    // .then(res=>res.text())
-    // .then(data=>{
-    //     teste.innerHTML = data
-    // })
 }
 
 

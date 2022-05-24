@@ -207,5 +207,7 @@ var quantum = 0;
 var overload = 0;
 
 //FIFO([a,b,c,d,e]);
-SJF([a,b,c,d,e]);
+//SJF([a,b,c,d,e]);
 //EDF([f,g,h,i],quantum,overload);
+
+export {FIFO,SJF,RoundRobin,EDF}
