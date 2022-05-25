@@ -1,5 +1,6 @@
 export default class Process {
-    constructor(arrive, executionTime, deadline, priority){
+    constructor(id, arrive, executionTime, deadline, priority){
+        this.id = id;
         this.arrive = arrive;
         this.executionTime = executionTime;
         this.deadline = deadline;
