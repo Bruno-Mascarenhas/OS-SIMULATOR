@@ -36,26 +36,26 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
     //console.log(data)
     let processos = []
     for (let i = 1; i <= data.n_processos; i++) {
-        processos.push(new Process(+eval('data.chegada'+i),+eval('data.execucao'+i),+eval('data.deadline'+i),+eval('data.prioridade'+i)));
-        //processos.push(new Process(+i,+eval('data.chegada'+i),+eval('data.execucao'+i),+eval('data.deadline'+i),+eval('data.prioridade'+i)));
+        //processos.push(new Process(+eval('data.chegada'+i),+eval('data.execucao'+i),+eval('data.deadline'+i),+eval('data.prioridade'+i)));
+        processos.push(new Process(+i,+eval('data.chegada'+i),+eval('data.execucao'+i),+eval('data.deadline'+i),+eval('data.prioridade'+i)));
     }
-
+    let time = []
     switch(value) {
         case 'FIFO':
-            FIFO(processos)
+            time = FIFO(processos)
             break;
         case 'SJF':
-            SJF(processos)
+            time = SJF(processos)
             break;
         case 'Round Robin':
-            RoundRobin(processos,data.quantum,data.sobrecarga)
+            time = RoundRobin(processos,data.quantum,data.sobrecarga)
             break;
         case 'EDF':
-            EDF(processos,data.quantum,data.sobrecarga)
+            time = EDF(processos,data.quantum,data.sobrecarga)
             break;
     }
     //console.log(processos)
-    start();
+    start(time,data.n_processos);
 })
 
 
@@ -63,24 +63,24 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
 
 
 // Animação
-function start() {
+function start(time,nProcessos) {
     // Variaveis do sistema
     // ************************************************
-    let nProcessos = 4;
+    // let nProcessos = 4;
     const animatioDelay = 0.5;
 
-    let time = [
-        [1, 'green'],
-        [1, 'green'],
-        [1, 'red'],
-        [2, 'green'],
-        [2, 'green'],
-        [3, 'green'],
-        [3, 'green'],
-        [3, 'green'],
-        [3, 'red'],
-        [4, 'green'],
-    ]
+    // let time = [
+    //     [1, 'green'],
+    //     [1, 'green'],
+    //     [1, 'red'],
+    //     [2, 'green'],
+    //     [2, 'green'],
+    //     [3, 'green'],
+    //     [3, 'green'],
+    //     [3, 'green'],
+    //     [3, 'red'],
+    //     [4, 'green'],
+    // ]
     // ************************************************
 
     let tempoTotal = time.length;

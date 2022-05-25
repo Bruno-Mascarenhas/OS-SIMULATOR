@@ -26,7 +26,14 @@ function FIFO(processes) {
             aux1 = processes[i].arrive;
             aux2 = aux1 + processes[i].executionTime;
             partial.push(processes[i].executionTime); //adiciona o turnaround do primeiro processo no array
-            processTime.push([aux1,aux2]) //adiciona as cordenadas do primeiro processo no array
+            if(aux1 != 0){
+                for(var j = 0; j < aux1; j++){
+                    processTime.push([i+1,"white"]); //adiciona as cordenadas em branco no array
+                }
+            }
+            for(var j = aux1; j < aux2; j++){
+                processTime.push([processes[i].id,"green"]); //adiciona as cordenadas do primeiro processo no array
+            }      
         } else { 
             if(processes[i].arrive <= aux2) { //quando o proximo processo está em espera
                 aux1 = aux2;
@@ -34,13 +41,18 @@ function FIFO(processes) {
                 //adiciona o turnaround do processo no array
                 partial.push(processes[i].executionTime + partial[i-1]);
             } else { //quando o processo anterior termina antes do atual chegar
+                for(var j = aux2; j < processes[i].arrive; j++){
+                    processTime.push([i+1,"white"]); //adiciona as cordenadas em branco no array
+                }
                 aux1 = processes[i].arrive;
                 aux2 = aux1 + processes[i].executionTime;
                 //adiciona o turnaround do processo no array
                 partial.push(processes[i].executionTime + partial[i-1]);
             }
-            //adicionando coordenadas do processo no array
-            processTime.push([aux1,aux2]);
+            for(var j = aux1; j < aux2; j++){
+                //adicionando coordenadas do processo no array
+                processTime.push([processes[i].id,"green"]);
+            }   
         }
     }
 
@@ -56,6 +68,9 @@ function FIFO(processes) {
     console.log("Sum: ",sum);
     console.log("Process Time: ",processTime);
     console.log("Trunaround: ",turnaround);
+    console.log(processTime);
+
+    return processTime;
 }
 
 //Shortest Job First
@@ -84,7 +99,14 @@ function SJF(processes) {
             aux1 = processes[i].arrive;
             aux2 = aux1 + processes[i].executionTime;
             partial.push(processes[i].executionTime); //adiciona o turnaround do primeiro processo no array
-            processTime.push([aux1,aux2]) //adiciona as cordenadas do primeiro processo no array
+            if(aux1 != 0){
+                for(var j = 0; j < aux1; j++){
+                    processTime.push([i+1,"white"]); //adiciona as cordenadas do primeiro processo no array
+                }
+            }
+            for(var j = aux1; j < aux2; j++){
+                processTime.push([processes[i].id,"green"]); //adiciona as cordenadas do primeiro processo no array
+            }      
         } else { 
             if(processes[i].arrive <= aux2) { //quando o proximo processo está em espera
                 aux1 = aux2;
@@ -92,13 +114,18 @@ function SJF(processes) {
                 //adiciona o turnaround do processo no array
                 partial.push(processes[i].executionTime + partial[i-1]);
             } else { //quando o processo anterior termina antes do atual chegar
+                for(var j = aux2; j < processes[i].arrive; j++){
+                    processTime.push([i+1,"white"]); //adiciona as cordenadas em branco no array
+                }
                 aux1 = processes[i].arrive;
                 aux2 = aux1 + processes[i].executionTime;
                 //adiciona o turnaround do processo no array
                 partial.push(processes[i].executionTime + partial[i-1]);
             }
-            //adicionando coordenadas do processo no array
-            processTime.push([aux1,aux2]);
+            for(var j = aux1; j < aux2; j++){
+                //adicionando coordenadas do processo no array
+                processTime.push([processes[i].id,"green"]);
+            }
         }
     }
 
@@ -114,6 +141,9 @@ function SJF(processes) {
     console.log("Sum: ",sum);
     console.log("Process Time: ",processTime);
     console.log("Trunaround: ",turnaround);
+    console.log(processTime);
+
+    return processTime;
 }
 
 function RoundRobin(processes, quantum, overload) {
@@ -192,22 +222,5 @@ function EDF(processes, quantum, overload) {
     console.log("Deadlines: ",deadlines);
 
 }
-
-var a = new Process(1,10,0,0);
-var b = new Process(5,6,0,1);
-var c = new Process(7,2,0,2);
-var d = new Process(12,4,0,3);
-var e = new Process(13,8,0,4);
-var f = new Process(1,4,7,0);
-var g = new Process(5,2,5,1);
-var h = new Process(7,1,8,2);
-var i = new Process(12,3,10,3);
-
-var quantum = 0;
-var overload = 0;
-
-//FIFO([a,b,c,d,e]);
-//SJF([a,b,c,d,e]);
-//EDF([f,g,h,i],quantum,overload);
 
 export {FIFO,SJF,RoundRobin,EDF}
