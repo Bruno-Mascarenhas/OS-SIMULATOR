@@ -81,19 +81,33 @@ function SJF(processes) {
     console.log("Processos antes da ordenação");
     console.table(processes); //printa em uma tabela os processos recebidos
 
-    //Ordena os processos por tempo de execução.
+    //Ordena os processos por tempo de chegada.
     processes.sort((x, y) => {
-        return x.executionTime - y.executionTime;
+        return x.arrive - y.arrive;
     });
-
-    console.log("Processos depois da ordenação");
-    console.table(processes);
 
     //variáveis para a posição inicial e final de cada processo
     var processTime = [];
     var aux1, aux2;
     //parciais para calcular o turnaround médio
     var partial = [];
+
+    var aux;
+    //ordenando o vetor com base na ordem de chegada e o tempo de execução.
+    for(var i = 1; i<processes.length-1; i++){
+        for(var j = i+1; j < processes.length; j++){
+            if(processes[i].arrive == processes[j].arrive || (processes[i].arrive + processes[i].executionTime) >= processes[j].arrive){
+                if(processes[i].executionTime > processes[j].executionTime){
+                    aux = processes[j];
+                    processes[j] = processes[i];
+                    processes[i] = aux;
+                }
+            }
+        }
+    }
+
+    console.log("Processos depois da ordenação");
+    console.table(processes);
 
     for(var i = 0; i<processes.length; i++){
         if(i == 0){
@@ -108,7 +122,7 @@ function SJF(processes) {
             for(var j = aux1; j < aux2; j++){
                 processTime.push([processes[i].id,"green"]); //adiciona as cordenadas do primeiro processo no array
             }      
-        } else { 
+        } else {
             if(processes[i].arrive <= aux2) { //quando o proximo processo está em espera
                 aux1 = aux2;
                 aux2 = aux1 + processes[i].executionTime;
@@ -236,11 +250,12 @@ function EDF(processes, quantum, overload) {
     }
 }
 
-let a = new Process(0,0,2,20,1)
-let b = new Process(1,1,3,20,1)
-let c = new Process(2,2,1,20,1)
-let d = new Process(3,3,4,20,1)
+let a = new Process(0,0,2,20,1);
+let b = new Process(1,1,3,20,1);
+let c = new Process(2,2,1,20,1);
+let d = new Process(3,3,4,20,1);
 
-RoundRobin([a,b,c,d],10,0)
+//RoundRobin([a,b,c,d],10,0)
+SJF([d,c,b,b,a,a,c]);
 
 export {FIFO,SJF,RoundRobin,EDF}
