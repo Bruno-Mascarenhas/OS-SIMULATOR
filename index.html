@@ -14,42 +14,49 @@
 </head>
 
 <body>
-    <div class="container">
-        <table id="table"></table>
-    </div>
-
     <form class="container forms shadow my-5 p-4" method="get" id="formInput">
-        <div class="container shadow p-4 mb-5" style="width: 550px;">
-            <p class="h3 mb-3">Escalonamento de Processos</p>
-            <div class="form-floating mb-3">
-                <select class="form-select" id="algoritimo">
-                    <option value="FIFO" selected>FIFO</option>
-                    <option value="SJF">SJF</option>
-                    <option value="Round Robin">Round Robin</option>
-                    <option value="EDF">EDF</option>
-                </select>
-                <label for="algoritimo">Algoritimo</label>
+        <div class="row">
+            <div class="col-3">
+                <div class="container shadow p-4 mb-5">
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="algoritimo">
+                            <option value="FIFO" selected>FIFO</option>
+                            <option value="SJF">SJF</option>
+                            <option value="Round Robin">Round Robin</option>
+                            <option value="EDF">EDF</option>
+                        </select>
+                        <label for="algoritimo">Algoritimo</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input name="n_processos" type="number" min="1" max="100" class="form-control" id="n-processos">
+                        <label for="floatingInput">Número de Processos</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input name="quantum" type="number" class="form-control" id="floatingPassword">
+                        <label for="floatingPassword">Quantum</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input name="sobrecarga" type="number" class="form-control" id="floatingPassword">
+                        <label for="floatingPassword">Sobrecarga</label>
+                    </div>
+                    <button type="submit" class="btn-1 btn btn-primary mb-3">Simular</button>
+                </div>
             </div>
-            <div class="form-floating mb-3">
-                <input name="n_processos" type="number" min="1" max="100" class="form-control" id="n-processos">
-                <label for="floatingInput">Número de Processos</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input name="quantum" type="number" class="form-control" id="floatingPassword">
-                <label for="floatingPassword">Quantum</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input name="sobrecarga" type="number" class="form-control" id="floatingPassword">
-                <label for="floatingPassword">Sobrecarga</label>
-            </div>
-            <button type="submit" class="btn-1 btn btn-primary mb-3">Simular</button>
-        </div>
+            <div class="col">
+                <!-- Gera os formularios -->
+                <div class="container d-flex flex-wrap justify-content-center" id="processos">
 
-        <!-- Gera os formularios -->
-        <div class="container d-flex flex-wrap justify-content-center" id="processos">
-
+                </div>
+            </div>
         </div>
     </form>
+
+    <div class="container">
+        <p class="h1 mb-3">Escalonamento de Processos</p>
+        <p class="h3 mb-3">Gráfico de Gantt</p>
+        <table id="table"></table>
+        <h5 class="mt-3" id="turnAround"></h5>
+    </div>
 
 
     <!-- Bootstrap Bundle with Popper -->
