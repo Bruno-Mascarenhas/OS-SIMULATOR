@@ -55,8 +55,9 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
             [time,turnaround] = EDF(processos,data.quantum,data.sobrecarga)
             break;
     }
+    document.getElementById("turnAround").textContent = `Turnaround = ${turnaround}`;
     //console.log(processos)
-    start(time,turnaround,data.n_processos);
+    start(time,data.n_processos);
 })
 
 
@@ -64,7 +65,7 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
 
 
 // Animação
-function start(time,turnaround,nProcessos) {
+function start(time,nProcessos) {
     // Variaveis do sistema
     // ************************************************
     // let nProcessos = 4;
