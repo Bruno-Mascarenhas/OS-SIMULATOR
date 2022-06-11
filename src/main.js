@@ -166,6 +166,7 @@ function RoundRobin(processes, quantum, overload) {
     let sys_time = 0;
     let processes_time = new Array(processes.length).fill(0).map((x) => new Array().fill(0))
     let processes_bkp = processes.map((x) => x);
+    let times = []
 
     while(processes.length > 0) {
         let process = processes.shift();
@@ -183,16 +184,33 @@ function RoundRobin(processes, quantum, overload) {
                 for(let i=0; i<processes.length; i++){
                     tmp = min(tmp, processes[i].arrive);
                 }
+                for(let i=sys_time; i<tmp; i++){
+                    times.push([i, "white"]);
+                }
                 sys_time = tmp;
             }
         }
         else if(process.executionTime > quantum) {
             process.executionTime -= quantum;
             processes_time[process.id].push([sys_time, sys_time + quantum]);
+
+            for(let i=sys_time; i<sys_time + quantum; i++){
+                times.push([process.id, "green"]);
+            }
+
+            for(let i=sys_time + quantum; i<sys_time + quantum + overload; i++){
+                times.push([process.id, "red"]);
+            }
+
             sys_time += quantum + overload;
             processes.push(process);
         } else {
             processes_time[process.id].push([sys_time, sys_time + process.executionTime]);
+
+            for(let i=sys_time; i<sys_time + process.executionTime; i++){
+                times.push([process.id, "green"]);
+            }
+
             sys_time += process.executionTime;
         }
     }
@@ -206,8 +224,9 @@ function RoundRobin(processes, quantum, overload) {
 
     turnaround = turnaround / processes_bkp.length;
     console.table(processes_time)
-    console.log(turnaround / processes_bkp.length);
-    return turnaround
+    console.log(turnaround);
+    console.log(times);
+    return [times, turnaround];
 }
 
 function EDF(processes, quantum, overload) {
@@ -255,7 +274,10 @@ let b = new Process(1,1,3,20,1);
 let c = new Process(2,2,1,20,1);
 let d = new Process(3,3,4,20,1);
 
-//RoundRobin([a,b,c,d],10,0)
-SJF([d,c,b,b,a,a,c]);
+let x = new Process(0,0,3,10,1);
+let y = new Process(1,0,5,10,1);
+
+RoundRobin([y,x],2,1)
+//SJF([d,c,b,b,a,a,c]);
 
 export {FIFO,SJF,RoundRobin,EDF}
