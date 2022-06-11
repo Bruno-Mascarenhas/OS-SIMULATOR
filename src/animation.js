@@ -1,7 +1,9 @@
 import Process from './process/process.js';
 import {FIFO,SJF,RoundRobin,EDF} from './main.js'
 
-//drawMemoryTable()
+drawMemoryTable()
+drawDiskTable()
+drawPageTable()
 
 // Cria 1 formulario para cada processo
 // ******************************************************************
@@ -131,12 +133,53 @@ function start(time,nProcessos) {
 
 function drawMemoryTable(){
     let memoryTable = document.getElementById("memoria");
-    for (let i = 0; i < 50; i++) {
-        let tableCell = document.createElement("td");
-        tableCell.setAttribute("id", i);
-        memoryTable.appendChild(tableCell);
+    for (let i = 0; i < 10; i++) {
+        let tableRow = document.createElement("tr");
+
+        for (let j = 0;j<5;j++){
+            let tableCell = document.createElement("td");
+            tableCell.setAttribute("id", j*10+i);
+            tableCell.innerText = j*10+i
+            tableRow.appendChild(tableCell);
+        }
+        memoryTable.appendChild(tableRow);
     }
 }
+
+function drawDiskTable(){
+    let diskTable = document.getElementById("disco");
+    for (let i = 0; i < 5; i++) {
+        let tableRow = document.createElement("tr");
+
+        for (let j = 0;j<3;j++){
+            let tableCell = document.createElement("td");
+            tableCell.setAttribute("id", `d${i}.${j}`);
+            tableRow.appendChild(tableCell);
+        }
+        diskTable.appendChild(tableRow);
+    }
+}
+function drawPageTable(){
+    let pageTable = document.getElementById("page");
+    for (let i = 0; i < 8; i++) {
+        let tableRow = document.createElement("tr");
+
+        for (let j = 0;j<3;j++){
+            let tableCell = document.createElement("td");
+            tableCell.setAttribute("id", `p${i}.${j}`);
+            if(j==0){
+                tableCell.classList.add('number')
+                tableCell.innerText = i
+            }
+            if (j==2){
+                tableCell.classList.add('bitValid')
+            }
+            tableRow.appendChild(tableCell);
+        }
+        pageTable.appendChild(tableRow);
+    }
+}
+
 
 
 
