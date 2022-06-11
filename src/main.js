@@ -185,7 +185,7 @@ function RoundRobin(processes, quantum, overload) {
                     tmp = Math.min(tmp, processes[i].arrive);
                 }
                 for(let i=sys_time; i<tmp; i++){
-                    times.push([i, "white"]);
+                    times.push([1, "white"]);
                 }
                 sys_time = tmp;
             }
@@ -270,15 +270,15 @@ function EDF(processes, quantum, overload) {
     }
 }
 
-let a = new Process(0,0,2,20,1);
-let b = new Process(1,1,3,20,1);
-let c = new Process(2,2,1,20,1);
-let d = new Process(3,3,4,20,1);
+let a = new Process(1,0,2,20,1);
+let b = new Process(2,1,3,20,1);
+let c = new Process(3,2,1,20,1);
+let d = new Process(4,3,4,20,1);
 
 let x = new Process(1,1,3,10,1);
 let y = new Process(2,1,5,10,1);
 
 RoundRobin([y,x],2,1)
-//SJF([d,c,b,b,a,a,c]);
+//SJF([d,c,b,a]);
 
 export {FIFO,SJF,RoundRobin,EDF}
