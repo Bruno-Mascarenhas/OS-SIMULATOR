@@ -1,6 +1,7 @@
 import Process from './process/process.js';
 import {FIFO,SJF,RoundRobin,EDF} from './main.js'
 
+//drawMemoryTable()
 
 // Cria 1 formulario para cada processo
 // ******************************************************************
@@ -49,10 +50,10 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
             [time,turnaround] = SJF(processos)
             break;
         case 'Round Robin':
-            [time,turnaround] = RoundRobin(processos,data.quantum,data.sobrecarga)
+            [time,turnaround] = RoundRobin(processos,eval(data.quantum),eval(data.sobrecarga))
             break;
         case 'EDF':
-            [time,turnaround] = EDF(processos,data.quantum,data.sobrecarga)
+            [time,turnaround] = EDF(processos,eval(data.quantum),eval(data.sobrecarga))
             break;
     }
     document.getElementById("turnAround").textContent = `Turnaround = ${turnaround}`;
@@ -125,6 +126,15 @@ function start(time,nProcessos) {
     function changeColor(nProcesso, tempo, cor) {
         document.getElementById(nProcesso + "." + tempo).style.backgroundColor = cor;
         // document.getElementById("1.1").style.borderRightColor = "pink";
+    }
+}
+
+function drawMemoryTable(){
+    let memoryTable = document.getElementById("memoria");
+    for (let i = 0; i < 50; i++) {
+        let tableCell = document.createElement("td");
+        tableCell.setAttribute("id", i);
+        memoryTable.appendChild(tableCell);
     }
 }
 
