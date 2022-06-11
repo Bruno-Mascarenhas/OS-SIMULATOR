@@ -182,7 +182,7 @@ function RoundRobin(processes, quantum, overload) {
             if(find == 0){
                 let tmp = 999999999;
                 for(let i=0; i<processes.length; i++){
-                    tmp = min(tmp, processes[i].arrive);
+                    tmp = Math.min(tmp, processes[i].arrive);
                 }
                 for(let i=sys_time; i<tmp; i++){
                     times.push([i, "white"]);
@@ -214,8 +214,6 @@ function RoundRobin(processes, quantum, overload) {
             sys_time += process.executionTime;
         }
     }
-
-    console.table(processes_time)
 
     let turnaround = 0;
     processes_time.forEach((times,i) => {
@@ -255,7 +253,7 @@ function EDF(processes, quantum, overload) {
             if(find == 0){
                 let tmp = 999999999;
                 for(let i=0; i<processes.length; i++){
-                    tmp = min(tmp, processes[i].arrive);
+                    tmp = Math.min(tmp, processes[i].arrive);
                 }
                 sys_time = tmp;
             }
@@ -277,8 +275,8 @@ let b = new Process(1,1,3,20,1);
 let c = new Process(2,2,1,20,1);
 let d = new Process(3,3,4,20,1);
 
-let x = new Process(1,0,3,10,1);
-let y = new Process(2,0,5,10,1);
+let x = new Process(1,1,3,10,1);
+let y = new Process(2,1,5,10,1);
 
 RoundRobin([y,x],2,1)
 //SJF([d,c,b,b,a,a,c]);
