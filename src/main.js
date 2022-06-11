@@ -71,7 +71,7 @@ function FIFO(processes) {
     console.log("Trunaround: ",turnaround);
     console.log(processTime);
 
-    return processTime;
+    return [processTime,turnaround];
 }
 
 //Shortest Job First
@@ -158,7 +158,7 @@ function SJF(processes) {
     console.log("Trunaround: ",turnaround);
     console.log(processTime);
 
-    return processTime;
+    return [processTime,turnaround];
 }
 
 function RoundRobin(processes, quantum, overload) {
