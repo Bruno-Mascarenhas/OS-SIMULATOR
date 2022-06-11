@@ -164,7 +164,7 @@ function SJF(processes) {
 function RoundRobin(processes, quantum, overload) {
     //Roda o processo até o valor do quantum do sistema
     let sys_time = 0;
-    let processes_time = new Array(processes.length+1).fill(0).map((x) => new Array().fill(0))
+    let processes_time = new Array(processes.length+1).fill(0).map((x) => new Array().fill(0));
     let processes_bkp = processes.map((x) => x);
     let times = []
 
@@ -233,41 +233,98 @@ function RoundRobin(processes, quantum, overload) {
 function EDF(processes, quantum, overload) {
     //Roda os processos de acordo o deadline e vai adicionando o quantum
     let sys_time = 0;
-    let processes_time = new Array(processes.length).fill(0).map((x) => new Array().fill(0))
+    let processes_time = new Array(processes.length+1).fill(0).map((x) => new Array().fill(0));
     let processes_bkp = processes.map((x) => x);
+    //let lookup_table = new Array(processes.length+1).fill(0);
+    let times = []
 
-    let pq = new PriorityQueue((x, y) => x.deadline > y.deadline)
-    processes.forEach((x) => pq.push(x))
+    let pq = new PriorityQueue((x, y) => x.deadline < y.deadline)
+    
+    //processes.forEach((x) => pq.push(x))
 
-    while(processes.length > 0) {
-        let process = processes.shift();
+    while(processes.length > 0 || pq.size() > 0) {
+        if(processes.length > 0) {
+            let process = processes[0];
 
-        if(process.arrive > sys_time){
-            processes.push(process);
-            let find = 0;
-            for(let i=0; i<processes.lenght; i++){
-                if(processes[i].arrive <= sys_time){
-                    find = 1;
+            if(process.arrive > sys_time){
+                let find = 0;
+                for(let i=0; i<processes.lenght; i++){
+                    if(processes[i].arrive <= sys_time){
+                        find = 1;
+                    }
                 }
-            }
-            if(find == 0){
-                let tmp = 999999999;
-                for(let i=0; i<processes.length; i++){
-                    tmp = Math.min(tmp, processes[i].arrive);
+                if(find == 0){
+                    let tmp = 999999999;
+                    for(let i=0; i<processes.length; i++){
+                        tmp = Math.min(tmp, processes[i].arrive);
+                    }
+                    for(let i=sys_time; i<tmp; i++){
+                        times.push([1, "white"]);
+                    }
+                    sys_time = tmp;
                 }
-                sys_time = tmp;
             }
         }
-        else if(process.executionTime > quantum) {
-            process.executionTime -= quantum;
-            processes_time[process.id].push([sys_time, sys_time + quantum]);
-            sys_time += quantum + overload;
-            processes.push(process);
-        } else {
-            processes_time[process.id].push([sys_time, sys_time + process.executionTime]);
-            sys_time += process.executionTime;
+
+        let to_rem = []
+        for (let i = 0; i < processes.length; i++) {
+            if(processes[i].arrive <= sys_time){
+                pq.push(processes[i]);
+                to_rem.push(processes[i].id);
+            }
+        }
+
+        for (let i = 0; i < to_rem.length; i++) {
+            processes = processes.filter((x) => x.id != to_rem[i]);
+        }
+
+        if(pq.size() > 0){
+            let cur = pq.pop();
+            if(cur.executionTime > quantum) {
+                cur.executionTime -= quantum;
+                processes_time[cur.id].push([sys_time, sys_time + quantum]);
+    
+                for(let i=sys_time; i<sys_time + quantum; i++){
+                    if(cur.deadline >= i)
+                        times.push([cur.id, "green"]);
+                    else
+                        times.push([cur.id, "gray"]);
+                }
+    
+                for(let i=sys_time + quantum; i<sys_time + quantum + overload; i++){
+                    times.push([cur.id, "red"]);
+                }
+    
+                sys_time += quantum + overload;
+                pq.push(cur);
+            } else {
+                processes_time[cur.id].push([sys_time, sys_time + cur.executionTime]);
+    
+                for(let i=sys_time, j = 0; i<sys_time + cur.executionTime; i++){
+                    if(cur.deadline >= i)
+                        times.push([cur.id, "green"]);
+                    else
+                        times.push([cur.id, "gray"]);
+                }
+    
+                sys_time += cur.executionTime;
+            }
         }
     }
+
+    console.table(processes_time)
+    console.log(times);
+    let turnaround = 0;
+    processes_time.forEach((times,i) => {
+        //console.log(`times ${i} = `,times)
+        //console.log(times[times.length-1][1], processes_bkp[i].arrive), '\n';
+        if(i != 0)
+            turnaround += times[times.length-1][1] - processes_bkp[i-1].arrive;
+    });
+
+    turnaround = turnaround / processes_bkp.length;
+    console.log(turnaround);
+    return [times, turnaround];
 }
 
 let a = new Process(1,0,2,20,1);
@@ -275,10 +332,12 @@ let b = new Process(2,1,3,20,1);
 let c = new Process(3,2,1,20,1);
 let d = new Process(4,3,4,20,1);
 
-let x = new Process(1,1,3,10,1);
-let y = new Process(2,1,5,10,1);
+let x = new Process(1,0,4,7,1);
+let y = new Process(2,1,2,6,1);
+let z = new Process(3,1,2,7,1);
 
-RoundRobin([y,x],2,1)
+//RoundRobin([y,x],2,1)
 //SJF([d,c,b,a]);
+EDF([x,y,z],2,1)
 
 export {FIFO,SJF,RoundRobin,EDF}
