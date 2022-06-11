@@ -164,7 +164,7 @@ function SJF(processes) {
 function RoundRobin(processes, quantum, overload) {
     //Roda o processo até o valor do quantum do sistema
     let sys_time = 0;
-    let processes_time = new Array(processes.length).fill(0).map((x) => new Array().fill(0))
+    let processes_time = new Array(processes.length+1).fill(0).map((x) => new Array().fill(0))
     let processes_bkp = processes.map((x) => x);
     let times = []
 
@@ -215,11 +215,14 @@ function RoundRobin(processes, quantum, overload) {
         }
     }
 
+    console.table(processes_time)
+
     let turnaround = 0;
     processes_time.forEach((times,i) => {
         //console.log(`times ${i} = `,times)
         //console.log(times[times.length-1][1], processes_bkp[i].arrive), '\n';
-        turnaround += times[times.length-1][1] - processes_bkp[i].arrive;
+        if(i != 0)
+            turnaround += times[times.length-1][1] - processes_bkp[i-1].arrive;
     });
 
     turnaround = turnaround / processes_bkp.length;
@@ -274,8 +277,8 @@ let b = new Process(1,1,3,20,1);
 let c = new Process(2,2,1,20,1);
 let d = new Process(3,3,4,20,1);
 
-let x = new Process(0,0,3,10,1);
-let y = new Process(1,0,5,10,1);
+let x = new Process(1,0,3,10,1);
+let y = new Process(2,0,5,10,1);
 
 RoundRobin([y,x],2,1)
 //SJF([d,c,b,b,a,a,c]);
