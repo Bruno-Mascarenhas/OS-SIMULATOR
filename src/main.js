@@ -71,7 +71,11 @@ function FIFO(processes) {
     console.log("Trunaround: ",turnaround);
     console.log(processTime);
 
+<<<<<<< HEAD
     return [processTime, turnaround];
+=======
+    return [processTime,turnaround];
+>>>>>>> ed077fbb52c0ee0b4bee72e52cae94c4518fdf9d
 }
 
 //Shortest Job First
@@ -158,7 +162,11 @@ function SJF(processes) {
     console.log("Trunaround: ",turnaround);
     console.log(processTime);
 
+<<<<<<< HEAD
     return [processTime, turnaround];
+=======
+    return [processTime,turnaround];
+>>>>>>> ed077fbb52c0ee0b4bee72e52cae94c4518fdf9d
 }
 
 function RoundRobin(processes, quantum, overload) {
