@@ -25,7 +25,14 @@
                             <option value="Round Robin">Round Robin</option>
                             <option value="EDF">EDF</option>
                         </select>
-                        <label for="algoritimo">Algoritimo</label>
+                        <label for="algoritimo">Escalonamento</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="algoritimoMemoria">
+                            <option value="FIFO" selected>FIFO</option>
+                            <option value="LRU">LRU</option>
+                        </select>
+                        <label for="algoritimoMemoria">Memória</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input name="n_processos" type="number" min="1" max="100" class="form-control" id="n-processos">

@@ -13,8 +13,9 @@ td,th {
 #memoria td {
     width: 2.5rem;
     height: 2.5rem;
-    vertical-align: top;
-    text-align: left;
+    text-align: center;
+    /* vertical-align: top;
+    text-align: left; */
 }
 
 #disco {

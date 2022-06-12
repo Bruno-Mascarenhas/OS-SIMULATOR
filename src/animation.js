@@ -34,17 +34,19 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
     e.preventDefault()
     let data = Array.from(document.querySelectorAll('#formInput input')).reduce((acc, input) => ({ ...acc, [input.name]: input.value }), {});
     let algoritimo = document.getElementById('algoritimo')
-    let value = algoritimo.options[algoritimo.selectedIndex].value;
+    let memoria = document.getElementById('algoritimoMemoria')
+    let escalonamento = algoritimo.options[algoritimo.selectedIndex].value;
+    let algoritimoMemoria = memoria.options[memoria.selectedIndex].value;
     //console.log(value)
     //console.log(data)
     let processos = []
     for (let i = 1; i <= data.n_processos; i++) {
         //processos.push(new Process(+eval('data.chegada'+i),+eval('data.execucao'+i),+eval('data.deadline'+i),+eval('data.prioridade'+i)));
-        processos.push(new Process(+i, +eval('data.chegada' + i), +eval('data.execucao' + i), +eval('data.deadline' + i), +eval('data.prioridade' + i)));
+        processos.push(new Process(+i, +eval('data.chegada' + i), +eval('data.execucao' + i), +eval('data.deadline' + i), +eval('data.prioridade' + i), +eval('data.n_paginas' + i)));
     }
     let time = []
     let turnaround = 0
-    switch (value) {
+    switch (escalonamento) {
         case 'FIFO':
             [time, turnaround] = FIFO(processos)
             break;
@@ -58,8 +60,11 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
             [time, turnaround] = EDF(processos, eval(data.quantum), eval(data.sobrecarga))
             break;
     }
+    // console.log(processos[0].n_pages)
+    // console.log(escalonamento)
+    // console.log(algoritimoMemoria)
+
     document.getElementById("turnAround").textContent = `Turnaround = ${turnaround}`;
-    //console.log(processos)
     start(time, data.n_processos, processos);
 })
 
@@ -88,6 +93,49 @@ function start(time, nProcessos, processos) {
     // ]
     // ************************************************
 
+    let vetorMemoria = [
+        [
+            [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1
+            ],
+            [1, -1, -1]
+        ],
+        [
+            [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1
+            ],
+            [1, 2, -1]
+        ],
+        [
+            [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
+                2, 2, 2, 2, 2, 2, 2, 2, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1
+            ],
+            [1, 2, 3]
+        ],
+        [
+            [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
+                2, 2, 2, 2, 2, 2, 2, 2, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1
+            ],
+            [1, 2, 3]
+        ]
+    ]
+
     let tempoTotal = time.length;
     let tempoAtual = 0;
 
@@ -99,6 +147,7 @@ function start(time, nProcessos, processos) {
         tempoAtual += 1;
 
         changeColor(time[tempoAtual - 1][0], tempoAtual, time[tempoAtual - 1][1]);
+        handleMemoria(vetorMemoria[tempoAtual - 1])
 
         if (tempoAtual == tempoTotal) {
             clearInterval(myInterval);
@@ -131,6 +180,27 @@ function start(time, nProcessos, processos) {
         // document.getElementById("1.1").style.borderRightColor = "pink";
     }
 
+    function handleMemoria(memoriaDisco) {
+        let [memoria, disco] = memoriaDisco
+        for (let i = 0; i < 50; i++) {
+            if (memoria[i] == -1) {
+                document.getElementById(i).innerText = ""
+            }
+            else {
+                document.getElementById(i).innerText = memoria[i]
+            }
+        }
+
+        for (let i = 0; i < disco.length; i++) {
+            if (disco[i] == -1) {
+                document.getElementById(`d${i+1}`).innerText = ""
+            }
+            else {
+                document.getElementById(`d${i+1}`).innerText = disco[i]
+            }
+        }
+    }
+
     function setDeadlines() {
         processos.forEach((processo, i) => {
             if (processo.deadline != 0) {
@@ -148,7 +218,7 @@ function drawMemoryTable() {
         for (let j = 0; j < 5; j++) {
             let tableCell = document.createElement("td");
             tableCell.setAttribute("id", j * 10 + i);
-            tableCell.innerText = j * 10 + i
+            //tableCell.innerText = j * 10 + i
             tableRow.appendChild(tableCell);
         }
         memoryTable.appendChild(tableRow);
@@ -162,7 +232,7 @@ function drawDiskTable() {
 
         for (let j = 0; j < 3; j++) {
             let tableCell = document.createElement("td");
-            tableCell.setAttribute("id", `d${i}.${j}`);
+            tableCell.setAttribute("id", `d${i * 3 + j + 1}`);
             tableRow.appendChild(tableCell);
         }
         diskTable.appendChild(tableRow);
