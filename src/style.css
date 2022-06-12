@@ -44,3 +44,27 @@ td,th {
     width: 1.5rem !important;
     height: 1.5rem !important;
 }
+
+#legenda-executando{
+    background-color: green;
+}
+#legenda-sobrecarga{
+    background-color: red;
+}
+#legenda-estouro{
+    background-color: gray;
+}
+#legenda-deadline{
+    border-right: 4px solid orange;
+}
+
+#legenda-executando,#legenda-sobrecarga,#legenda-estouro{
+    border: 2px solid black;
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+}
+
+.legenda {
+    margin: auto 4rem auto 0.5rem;
+}
