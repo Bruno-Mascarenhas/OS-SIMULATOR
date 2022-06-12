@@ -1,5 +1,15 @@
 import Process from './process/process.js';
 import PriorityQueue from './utils/priorityqueue.js';
+import MemoryScheduler from './memory/memoryScheduler.js';
+
+function cloneMessage(servermessage) {
+    var clone ={};
+    for( var key in servermessage ){
+        if(servermessage.hasOwnProperty(key)) //ensure not adding inherited props
+            clone[key]=servermessage[key];
+    }
+    return clone;
+}
 
 //First In FIrst Out
 function FIFO(processes) {
@@ -174,7 +184,7 @@ function RoundRobin(processes, quantum, overload) {
         if(process.arrive > sys_time){
             processes.push(process);
             let find = 0;
-            for(let i=0; i<processes.lenght; i++){
+            for(let i=0; i<processes.length; i++){
                 if(processes[i].arrive <= sys_time){
                     find = 1;
                 }
@@ -230,25 +240,26 @@ function RoundRobin(processes, quantum, overload) {
     return [times, turnaround];
 }
 
-function EDF(processes, quantum, overload) {
+function EDF(processes, quantum, overload, memory_scheduler) {
     //Roda os processos de acordo o deadline e vai adicionando o quantum
     let sys_time = 0;
     let processes_time = new Array(processes.length+1).fill(0).map((x) => new Array().fill(0));
     let processes_bkp = processes.map((x) => x);
     //let lookup_table = new Array(processes.length+1).fill(0);
-    let times = []
+    let times = [];
+    let mem_array = [];
 
-    let pq = new PriorityQueue((x, y) => x.deadline < y.deadline)
+    let mem_scheduler = new MemoryScheduler(memory_scheduler, processes.length);
+
+    let pq = new PriorityQueue((x, y) => x.deadline < y.deadline);
     
-    //processes.forEach((x) => pq.push(x))
-
     while(processes.length > 0 || pq.size() > 0) {
         if(processes.length > 0) {
             let process = processes[0];
 
             if(process.arrive > sys_time){
                 let find = 0;
-                for(let i=0; i<processes.lenght; i++){
+                for(let i=0; i<processes.length; i++){
                     if(processes[i].arrive <= sys_time){
                         find = 1;
                     }
@@ -284,6 +295,12 @@ function EDF(processes, quantum, overload) {
                 cur.executionTime -= quantum;
                 processes_time[cur.id].push([sys_time, sys_time + quantum]);
     
+                let tmp = Object.create(cur);
+                tmp.id -= 1;
+                let x = mem_scheduler.manage(tmp, sys_time);
+                mem_array.push(x);
+                //console.log(mem_array)
+
                 for(let i=sys_time; i<sys_time + quantum; i++){
                     if(cur.deadline >= i)
                         times.push([cur.id, "green"]);
@@ -298,6 +315,13 @@ function EDF(processes, quantum, overload) {
                 sys_time += quantum + overload;
                 pq.push(cur);
             } else {
+
+                let tmp = Object.create(cur);
+                tmp.id -= 1;
+                let x = mem_scheduler.manage(tmp, sys_time);
+                mem_array.push(x);
+                //console.log(mem_array)
+
                 processes_time[cur.id].push([sys_time, sys_time + cur.executionTime]);
     
                 for(let i=sys_time, j = 0; i<sys_time + cur.executionTime; i++){
@@ -306,15 +330,17 @@ function EDF(processes, quantum, overload) {
                     else
                         times.push([cur.id, "gray"]);
                 }
-    
+
                 sys_time += cur.executionTime;
             }
         }
     }
 
+    console.log(mem_array,)
     console.table(processes_time)
     console.log(times);
     let turnaround = 0;
+
     processes_time.forEach((times,i) => {
         //console.log(`times ${i} = `,times)
         //console.log(times[times.length-1][1], processes_bkp[i].arrive), '\n';
@@ -327,17 +353,17 @@ function EDF(processes, quantum, overload) {
     return [times, turnaround];
 }
 
-let a = new Process(1,0,2,20,1);
-let b = new Process(2,1,3,20,1);
-let c = new Process(3,2,1,20,1);
-let d = new Process(4,3,4,20,1);
+let a = new Process(1,0,2,20,1,4);
+let b = new Process(2,1,3,20,1,4);
+let c = new Process(3,2,1,20,1,4);
+let d = new Process(4,3,4,20,1,4);
 
-let x = new Process(1,0,4,7,1);
-let y = new Process(2,1,2,6,1);
-let z = new Process(3,1,2,7,1);
+let x = new Process(1,0,4,7,1,10);
+let y = new Process(2,1,2,6,1,10);
+let z = new Process(3,1,2,7,1,10);
 
-//RoundRobin([y,x],2,1)
+//RoundRobin([y,x],2,1,'FIFO')
 //SJF([d,c,b,a]);
-EDF([x,y,z],2,1)
+EDF([x,y,z],2,1,'FIFO')
 
 export {FIFO,SJF,RoundRobin,EDF}
