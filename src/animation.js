@@ -1,5 +1,5 @@
 import Process from './process/process.js';
-import {FIFO,SJF,RoundRobin,EDF} from './main.js'
+import { FIFO, SJF, RoundRobin, EDF } from './main.js'
 
 drawMemoryTable()
 drawDiskTable()
@@ -40,27 +40,27 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
     let processos = []
     for (let i = 1; i <= data.n_processos; i++) {
         //processos.push(new Process(+eval('data.chegada'+i),+eval('data.execucao'+i),+eval('data.deadline'+i),+eval('data.prioridade'+i)));
-        processos.push(new Process(+i,+eval('data.chegada'+i),+eval('data.execucao'+i),+eval('data.deadline'+i),+eval('data.prioridade'+i)));
+        processos.push(new Process(+i, +eval('data.chegada' + i), +eval('data.execucao' + i), +eval('data.deadline' + i), +eval('data.prioridade' + i)));
     }
     let time = []
     let turnaround = 0
-    switch(value) {
+    switch (value) {
         case 'FIFO':
-            [time,turnaround] = FIFO(processos)
+            [time, turnaround] = FIFO(processos)
             break;
         case 'SJF':
-            [time,turnaround] = SJF(processos)
+            [time, turnaround] = SJF(processos)
             break;
         case 'Round Robin':
-            [time,turnaround] = RoundRobin(processos,eval(data.quantum),eval(data.sobrecarga))
+            [time, turnaround] = RoundRobin(processos, eval(data.quantum), eval(data.sobrecarga))
             break;
         case 'EDF':
-            [time,turnaround] = EDF(processos,eval(data.quantum),eval(data.sobrecarga))
+            [time, turnaround] = EDF(processos, eval(data.quantum), eval(data.sobrecarga))
             break;
     }
     document.getElementById("turnAround").textContent = `Turnaround = ${turnaround}`;
     //console.log(processos)
-    start(time,data.n_processos);
+    start(time, data.n_processos, processos);
 })
 
 
@@ -68,7 +68,7 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
 
 
 // Animação
-function start(time,nProcessos) {
+function start(time, nProcessos, processos) {
     // Variaveis do sistema
     // ************************************************
     // let nProcessos = 4;
@@ -93,6 +93,7 @@ function start(time,nProcessos) {
 
     let myInterval = setInterval(animation, animatioDelay * 1000);
     createTable();
+    setDeadlines()
 
     function animation() {
         tempoAtual += 1;
@@ -108,11 +109,11 @@ function start(time,nProcessos) {
         let table = document.getElementById("table");
         table.innerHTML = "";
         for (let i = 1; i <= nProcessos; i++) {
-            createRow(i,table);
+            createRow(i, table);
         }
     }
 
-    function createRow(nProcesso,table) {
+    function createRow(nProcesso, table) {
         let tableRow = document.createElement("tr");
         let tableHead = document.createElement("th");
         tableHead.innerHTML = nProcesso;
@@ -129,29 +130,37 @@ function start(time,nProcessos) {
         document.getElementById(nProcesso + "." + tempo).style.backgroundColor = cor;
         // document.getElementById("1.1").style.borderRightColor = "pink";
     }
+
+    function setDeadlines() {
+        processos.forEach((processo, i) => {
+            if (processo.deadline != 0) {
+                document.getElementById((i + 1) + "." + processo.deadline).style.borderRight = "4px solid orange";
+            }
+        })
+    }
 }
 
-function drawMemoryTable(){
+function drawMemoryTable() {
     let memoryTable = document.getElementById("memoria");
     for (let i = 0; i < 10; i++) {
         let tableRow = document.createElement("tr");
 
-        for (let j = 0;j<5;j++){
+        for (let j = 0; j < 5; j++) {
             let tableCell = document.createElement("td");
-            tableCell.setAttribute("id", j*10+i);
-            tableCell.innerText = j*10+i
+            tableCell.setAttribute("id", j * 10 + i);
+            tableCell.innerText = j * 10 + i
             tableRow.appendChild(tableCell);
         }
         memoryTable.appendChild(tableRow);
     }
 }
 
-function drawDiskTable(){
+function drawDiskTable() {
     let diskTable = document.getElementById("disco");
     for (let i = 0; i < 5; i++) {
         let tableRow = document.createElement("tr");
 
-        for (let j = 0;j<3;j++){
+        for (let j = 0; j < 3; j++) {
             let tableCell = document.createElement("td");
             tableCell.setAttribute("id", `d${i}.${j}`);
             tableRow.appendChild(tableCell);
@@ -159,19 +168,19 @@ function drawDiskTable(){
         diskTable.appendChild(tableRow);
     }
 }
-function drawPageTable(){
+function drawPageTable() {
     let pageTable = document.getElementById("page");
     for (let i = 0; i < 8; i++) {
         let tableRow = document.createElement("tr");
 
-        for (let j = 0;j<3;j++){
+        for (let j = 0; j < 3; j++) {
             let tableCell = document.createElement("td");
             tableCell.setAttribute("id", `p${i}.${j}`);
-            if(j==0){
+            if (j == 0) {
                 tableCell.classList.add('number')
                 tableCell.innerText = i
             }
-            if (j==2){
+            if (j == 2) {
                 tableCell.classList.add('bitValid')
             }
             tableRow.appendChild(tableCell);
