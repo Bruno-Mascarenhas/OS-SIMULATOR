@@ -5,6 +5,7 @@ export default class MemoryScheduler {
         this.disk = new Array(n_processes).fill(-1);
         this.queue = []
         this.sys_time = 0;
+        this.n_disk = 0;
     }
 
     manage(process, sys_time) {
@@ -67,8 +68,10 @@ export default class MemoryScheduler {
             return [this.ram.map((x) => x), this.disk.map((x) => x)];
         }
 
-        if(this.disk[process.id] == -1)
-            this.disk[process.id] = 1;
+        if(this.disk[process.id] == -1){
+            this.disk[this.n_disk] = process.id + 1;
+            this.n_disk++;
+        }
             
         let find = -1;
         for(let i = 0 ; i < 50; i++){

@@ -350,7 +350,7 @@ function EDF(processes, quantum, overload, memory_scheduler) {
 
     turnaround = turnaround / processes_bkp.length;
     console.log(turnaround);
-    return [times, turnaround];
+    return [times, turnaround, mem_array];
 }
 
 let a = new Process(1,0,2,20,1,4);
