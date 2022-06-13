@@ -65,7 +65,7 @@ export default class MemoryScheduler {
 
     FIFO(process) {
         if(this.check(process)){
-            return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x!=-1 ? x+1 : x)];
+            return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x)];
         }
 
         if(this.disk[process.id] == -1){
@@ -104,7 +104,7 @@ export default class MemoryScheduler {
             this.queue.push(process.id);
         }
 
-        return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x!=-1 ? x+1 : x)];
+        return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x)];
     }
 
     LRU(process) {
@@ -112,7 +112,7 @@ export default class MemoryScheduler {
 
         if(this.check(process)){
             this.utilization_map[process.id] = this.sys_time;
-            return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x!=-1 ? x+1 : x)];
+            return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x)];
         }
 
         if(this.disk[process.id] == -1){
@@ -159,6 +159,6 @@ export default class MemoryScheduler {
             this.utilization_map[process.id] = this.sys_time;
         }
 
-        return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x!=-1 ? x+1 : x)];
+        return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x)];
     }
 }

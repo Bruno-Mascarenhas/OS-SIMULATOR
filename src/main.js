@@ -395,6 +395,6 @@ let z = new Process(3,1,2,7,1,20);
 
 //RoundRobin([y,x],2,1,'FIFO')
 //SJF([d,c,b,a]);
-EDF([x,y,z],2,1,'FIFO')
+EDF([x,y,z],2,1,'LRU')
 
 export {FIFO,SJF,RoundRobin,EDF}
