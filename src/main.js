@@ -249,6 +249,7 @@ function EDF(processes, quantum, overload, memory_scheduler) {
     let times = [];
     let mem_array = [];
 
+    memory_scheduler = memory_scheduler.trim()
     let mem_scheduler = new MemoryScheduler(memory_scheduler, processes.length);
 
     let pq = new PriorityQueue((x, y) => x.deadline < y.deadline);
@@ -336,9 +337,9 @@ function EDF(processes, quantum, overload, memory_scheduler) {
         }
     }
 
-    console.log(mem_array,)
-    console.table(processes_time)
-    console.log(times);
+    // console.log(mem_array,)
+    // console.table(processes_time)
+    // console.log(times);
     let turnaround = 0;
 
     processes_time.forEach((times,i) => {
@@ -349,7 +350,8 @@ function EDF(processes, quantum, overload, memory_scheduler) {
     });
 
     turnaround = turnaround / processes_bkp.length;
-    console.log(turnaround);
+    console.log("turn:" +turnaround);
+    console.log("mem :" +mem_array)
     return [times, turnaround, mem_array];
 }
 

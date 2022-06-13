@@ -46,26 +46,28 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
     }
     let time = []
     let turnaround = 0
+    let memory = []
+    console.log("memoria: " +algoritimoMemoria)
     switch (escalonamento) {
         case 'FIFO':
-            [time, turnaround] = FIFO(processos)
+            [time, turnaround,memory] = FIFO(processos,algoritimoMemoria)
             break;
         case 'SJF':
-            [time, turnaround] = SJF(processos)
+            [time, turnaround,memory] = SJF(processos,algoritimoMemoria)
             break;
         case 'Round Robin':
-            [time, turnaround] = RoundRobin(processos, eval(data.quantum), eval(data.sobrecarga))
+            [time, turnaround,memory] = RoundRobin(processos, eval(data.quantum), eval(data.sobrecarga),algoritimoMemoria)
             break;
         case 'EDF':
-            [time, turnaround] = EDF(processos, eval(data.quantum), eval(data.sobrecarga))
+            [time, turnaround,memory] = EDF(processos, eval(data.quantum), eval(data.sobrecarga),algoritimoMemoria)
             break;
     }
     // console.log(processos[0].n_pages)
     // console.log(escalonamento)
-    // console.log(algoritimoMemoria)
+    
 
     document.getElementById("turnAround").textContent = `Turnaround = ${turnaround}`;
-    start(time, data.n_processos, processos);
+    start(time, data.n_processos, processos,memory);
 })
 
 
@@ -73,7 +75,8 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
 
 
 // Animação
-function start(time, nProcessos, processos) {
+function start(time, nProcessos, processos,memory) {
+    console.log("memoria é : "+memory)
     // Variaveis do sistema
     // ************************************************
     // let nProcessos = 4;
@@ -93,48 +96,48 @@ function start(time, nProcessos, processos) {
     // ]
     // ************************************************
 
-    let vetorMemoria = [
-        [
-            [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1
-            ],
-            [1, -1, -1]
-        ],
-        [
-            [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1
-            ],
-            [1, 2, -1]
-        ],
-        [
-            [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
-                2, 2, 2, 2, 2, 2, 2, 2, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1
-            ],
-            [1, 2, 3]
-        ],
-        [
-            [
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
-                2, 2, 2, 2, 2, 2, 2, 2, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1
-            ],
-            [1, 2, 3]
-        ]
-    ]
+    // let vetorMemoria = [
+    //     [
+    //         [
+    //             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1,
+    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    //             -1, -1, -1, -1, -1, -1
+    //         ],
+    //         [1, -1, -1]
+    //     ],
+    //     [
+    //         [
+    //             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+    //             1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1,
+    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    //             -1, -1, -1, -1, -1, -1
+    //         ],
+    //         [1, 2, -1]
+    //     ],
+    //     [
+    //         [
+    //             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+    //             1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
+    //             2, 2, 2, 2, 2, 2, 2, 2, -1, -1, -1,
+    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    //             -1, -1, -1, -1, -1, -1
+    //         ],
+    //         [1, 2, 3]
+    //     ],
+    //     [
+    //         [
+    //             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+    //             1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
+    //             2, 2, 2, 2, 2, 2, 2, 2, -1, -1, -1,
+    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    //             -1, -1, -1, -1, -1, -1
+    //         ],
+    //         [3, 2, 1]
+    //     ]
+    // ]
 
     let tempoTotal = time.length;
     let tempoAtual = 0;
@@ -147,7 +150,7 @@ function start(time, nProcessos, processos) {
         tempoAtual += 1;
 
         changeColor(time[tempoAtual - 1][0], tempoAtual, time[tempoAtual - 1][1]);
-        handleMemoria(vetorMemoria[tempoAtual - 1])
+        handleMemoria(memory[tempoAtual - 1])
 
         if (tempoAtual == tempoTotal) {
             clearInterval(myInterval);
@@ -227,7 +230,7 @@ function drawMemoryTable() {
 
 function drawDiskTable() {
     let diskTable = document.getElementById("disco");
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 7; i++) {
         let tableRow = document.createElement("tr");
 
         for (let j = 0; j < 3; j++) {
