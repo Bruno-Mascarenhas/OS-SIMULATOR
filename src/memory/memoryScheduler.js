@@ -106,4 +106,19 @@ export default class MemoryScheduler {
 
         return [this.ram.map((x) => x), this.disk.map((x) => x)];
     }
+
+    LRU(process, sys_time) {
+        if(this.check(process)){
+            return [this.ram.map((x) => x), this.disk.map((x) => x)];
+        }
+
+        if(this.disk[process.id] == -1){
+            this.disk[this.n_disk] = process.id + 1;
+            this.n_disk++;
+        }
+
+        
+
+
+    }
 }

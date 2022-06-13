@@ -2,19 +2,14 @@ import Process from './process/process.js';
 import PriorityQueue from './utils/priorityqueue.js';
 import MemoryScheduler from './memory/memoryScheduler.js';
 
-function cloneMessage(servermessage) {
-    var clone ={};
-    for( var key in servermessage ){
-        if(servermessage.hasOwnProperty(key)) //ensure not adding inherited props
-            clone[key]=servermessage[key];
-    }
-    return clone;
-}
-
 //First In FIrst Out
-function FIFO(processes) {
+function FIFO(processes, memory_scheduler) {
     //Nesse caso o quantum e o overload não são necessários.
     //Ordena os processos por tempo de chegada
+    let mem_array = [];
+
+    memory_scheduler = memory_scheduler.trim()
+    let mem_scheduler = new MemoryScheduler(memory_scheduler, processes.length);
 
     console.log("Processos antes da ordenação");
     console.table(processes); //printa em uma tabela os processos recebidos
@@ -40,10 +35,16 @@ function FIFO(processes) {
             if(aux1 != 0){
                 for(var j = 0; j < aux1; j++){
                     processTime.push([i+1,"white"]); //adiciona as cordenadas em branco no array
+                    mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
                 }
             }
+            let tmp = Object.create(processes[i]);
+            tmp.id -= 1;
+            let x = mem_scheduler.manage(tmp, aux2);
+
             for(var j = aux1; j < aux2; j++){
                 processTime.push([processes[i].id,"green"]); //adiciona as cordenadas do primeiro processo no array
+                mem_array.push(x);
             }      
         } else { 
             if(processes[i].arrive <= aux2) { //quando o proximo processo está em espera
@@ -54,15 +55,21 @@ function FIFO(processes) {
             } else { //quando o processo anterior termina antes do atual chegar
                 for(var j = aux2; j < processes[i].arrive; j++){
                     processTime.push([i+1,"white"]); //adiciona as cordenadas em branco no array
+                    mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
                 }
                 aux1 = processes[i].arrive;
                 aux2 = aux1 + processes[i].executionTime;
                 //adiciona o turnaround do processo no array
                 partial.push(processes[i].executionTime + partial[i-1]);
             }
+            let tmp = Object.create(processes[i]);
+            tmp.id -= 1;
+            let x = mem_scheduler.manage(tmp, aux2);
+
             for(var j = aux1; j < aux2; j++){
                 //adicionando coordenadas do processo no array
                 processTime.push([processes[i].id,"green"]);
+                mem_array.push(x);
             }   
         }
     }
@@ -81,12 +88,16 @@ function FIFO(processes) {
     console.log("Trunaround: ",turnaround);
     console.log(processTime);
 
-    return [processTime,turnaround];
+    return [processTime,turnaround,mem_array];
 }
 
 //Shortest Job First
-function SJF(processes) {
+function SJF(processes, memory_scheduler) {
     //Nesse caso o quantum e o overload não são necessários.
+    let mem_array = [];
+
+    memory_scheduler = memory_scheduler.trim()
+    let mem_scheduler = new MemoryScheduler(memory_scheduler, processes.length);
 
     console.log("Processos antes da ordenação");
     console.table(processes); //printa em uma tabela os processos recebidos
@@ -127,10 +138,17 @@ function SJF(processes) {
             if(aux1 != 0){
                 for(var j = 0; j < aux1; j++){
                     processTime.push([i+1,"white"]); //adiciona as cordenadas do primeiro processo no array
+                    mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
                 }
             }
+
+            let tmp = Object.create(processes[i]);
+            tmp.id -= 1;
+            let x = mem_scheduler.manage(tmp, aux2);
+
             for(var j = aux1; j < aux2; j++){
                 processTime.push([processes[i].id,"green"]); //adiciona as cordenadas do primeiro processo no array
+                mem_array.push(x);
             }      
         } else {
             if(processes[i].arrive <= aux2) { //quando o proximo processo está em espera
@@ -141,15 +159,22 @@ function SJF(processes) {
             } else { //quando o processo anterior termina antes do atual chegar
                 for(var j = aux2; j < processes[i].arrive; j++){
                     processTime.push([i+1,"white"]); //adiciona as cordenadas em branco no array
+                    mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
                 }
                 aux1 = processes[i].arrive;
                 aux2 = aux1 + processes[i].executionTime;
                 //adiciona o turnaround do processo no array
                 partial.push(processes[i].executionTime + partial[i-1]);
             }
+
+            let tmp = Object.create(processes[i]);
+            tmp.id -= 1;
+            let x = mem_scheduler.manage(tmp, aux2);
+
             for(var j = aux1; j < aux2; j++){
                 //adicionando coordenadas do processo no array
                 processTime.push([processes[i].id,"green"]);
+                mem_array.push(x);
             }
         }
     }
@@ -168,15 +193,18 @@ function SJF(processes) {
     console.log("Trunaround: ",turnaround);
     console.log(processTime);
 
-    return [processTime,turnaround];
+    return [processTime,turnaround,mem_array];
 }
 
-function RoundRobin(processes, quantum, overload) {
-    //Roda o processo até o valor do quantum do sistema
+function RoundRobin(processes, quantum, overload, memory_scheduler) {
     let sys_time = 0;
     let processes_time = new Array(processes.length+1).fill(0).map((x) => new Array().fill(0));
     let processes_bkp = processes.map((x) => x);
     let times = []
+    let mem_array = [];
+
+    memory_scheduler = memory_scheduler.trim()
+    let mem_scheduler = new MemoryScheduler(memory_scheduler, processes.length);
 
     while(processes.length > 0) {
         let process = processes.shift();
@@ -196,6 +224,7 @@ function RoundRobin(processes, quantum, overload) {
                 }
                 for(let i=sys_time; i<tmp; i++){
                     times.push([1, "white"]);
+                    mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
                 }
                 sys_time = tmp;
             }
@@ -204,12 +233,18 @@ function RoundRobin(processes, quantum, overload) {
             process.executionTime -= quantum;
             processes_time[process.id].push([sys_time, sys_time + quantum]);
 
+            let tmp = Object.create(process);
+            tmp.id -= 1;
+            let x = mem_scheduler.manage(tmp, sys_time);
+
             for(let i=sys_time; i<sys_time + quantum; i++){
                 times.push([process.id, "green"]);
+                mem_array.push(x);
             }
 
             for(let i=sys_time + quantum; i<sys_time + quantum + overload; i++){
                 times.push([process.id, "red"]);
+                mem_array.push(x);
             }
 
             sys_time += quantum + overload;
@@ -217,8 +252,13 @@ function RoundRobin(processes, quantum, overload) {
         } else {
             processes_time[process.id].push([sys_time, sys_time + process.executionTime]);
 
+            let tmp = Object.create(process);
+            tmp.id -= 1;
+            let x = mem_scheduler.manage(tmp, sys_time);
+
             for(let i=sys_time; i<sys_time + process.executionTime; i++){
                 times.push([process.id, "green"]);
+                mem_array.push(x);
             }
 
             sys_time += process.executionTime;
@@ -227,8 +267,6 @@ function RoundRobin(processes, quantum, overload) {
 
     let turnaround = 0;
     processes_time.forEach((times,i) => {
-        //console.log(`times ${i} = `,times)
-        //console.log(times[times.length-1][1], processes_bkp[i].arrive), '\n';
         if(i != 0)
             turnaround += times[times.length-1][1] - processes_bkp[i-1].arrive;
     });
@@ -237,15 +275,13 @@ function RoundRobin(processes, quantum, overload) {
     console.table(processes_time)
     console.log(turnaround);
     console.log(times);
-    return [times, turnaround];
+    return [times, turnaround, mem_array];
 }
 
 function EDF(processes, quantum, overload, memory_scheduler) {
-    //Roda os processos de acordo o deadline e vai adicionando o quantum
     let sys_time = 0;
     let processes_time = new Array(processes.length+1).fill(0).map((x) => new Array().fill(0));
     let processes_bkp = processes.map((x) => x);
-    //let lookup_table = new Array(processes.length+1).fill(0);
     let times = [];
     let mem_array = [];
 
@@ -272,6 +308,7 @@ function EDF(processes, quantum, overload, memory_scheduler) {
                     }
                     for(let i=sys_time; i<tmp; i++){
                         times.push([1, "white"]);
+                        mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
                     }
                     sys_time = tmp;
                 }
@@ -295,14 +332,13 @@ function EDF(processes, quantum, overload, memory_scheduler) {
             if(cur.executionTime > quantum) {
                 cur.executionTime -= quantum;
                 processes_time[cur.id].push([sys_time, sys_time + quantum]);
-    
+
                 let tmp = Object.create(cur);
                 tmp.id -= 1;
                 let x = mem_scheduler.manage(tmp, sys_time);
-                mem_array.push(x);
-                //console.log(mem_array)
 
                 for(let i=sys_time; i<sys_time + quantum; i++){
+                    mem_array.push(x);
                     if(cur.deadline >= i)
                         times.push([cur.id, "green"]);
                     else
@@ -310,22 +346,21 @@ function EDF(processes, quantum, overload, memory_scheduler) {
                 }
     
                 for(let i=sys_time + quantum; i<sys_time + quantum + overload; i++){
+                    mem_array.push(x);
                     times.push([cur.id, "red"]);
                 }
     
                 sys_time += quantum + overload;
                 pq.push(cur);
             } else {
-
                 let tmp = Object.create(cur);
                 tmp.id -= 1;
                 let x = mem_scheduler.manage(tmp, sys_time);
-                mem_array.push(x);
-                //console.log(mem_array)
 
                 processes_time[cur.id].push([sys_time, sys_time + cur.executionTime]);
     
                 for(let i=sys_time, j = 0; i<sys_time + cur.executionTime; i++){
+                    mem_array.push(x);
                     if(cur.deadline >= i)
                         times.push([cur.id, "green"]);
                     else
@@ -337,28 +372,22 @@ function EDF(processes, quantum, overload, memory_scheduler) {
         }
     }
 
-    // console.log(mem_array,)
-    // console.table(processes_time)
-    // console.log(times);
+     console.log(mem_array);
+     console.table(processes_time);
+     console.log(times);
     let turnaround = 0;
 
     processes_time.forEach((times,i) => {
-        //console.log(`times ${i} = `,times)
-        //console.log(times[times.length-1][1], processes_bkp[i].arrive), '\n';
         if(i != 0)
             turnaround += times[times.length-1][1] - processes_bkp[i-1].arrive;
     });
 
     turnaround = turnaround / processes_bkp.length;
-    console.log("turn:" +turnaround);
-    console.log("mem :" +mem_array)
+
+    console.log(turnaround);
+
     return [times, turnaround, mem_array];
 }
-
-let a = new Process(1,0,2,20,1,4);
-let b = new Process(2,1,3,20,1,4);
-let c = new Process(3,2,1,20,1,4);
-let d = new Process(4,3,4,20,1,4);
 
 let x = new Process(1,0,4,7,1,10);
 let y = new Process(2,1,2,6,1,10);
