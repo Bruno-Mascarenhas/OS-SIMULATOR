@@ -4,18 +4,18 @@ export default class MemoryScheduler {
         this.ram = new Array(50).fill(-1);
         this.disk = new Array(n_processes).fill(-1);
         this.queue = []
+        this.utilization_map = new Array(n_processes).fill(-1);
         this.sys_time = 0;
         this.n_disk = 0;
     }
 
-    manage(process, sys_time) {
+    manage(process) {
         if(this.kind == "FIFO"){
-            return this.FIFO(process, sys_time);
+            return this.FIFO(process);
         }
         else {
-            return this.LRU(process, sys_time);
+            return this.LRU(process);
         }
-        return;
     }
 
     check(process) {
@@ -63,9 +63,9 @@ export default class MemoryScheduler {
         return;
     }
 
-    FIFO(process, sys_time) {
+    FIFO(process) {
         if(this.check(process)){
-            return [this.ram.map((x) => x), this.disk.map((x) => x)];
+            return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x!=-1 ? x+1 : x)];
         }
 
         if(this.disk[process.id] == -1){
@@ -104,12 +104,15 @@ export default class MemoryScheduler {
             this.queue.push(process.id);
         }
 
-        return [this.ram.map((x) => x), this.disk.map((x) => x)];
+        return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x!=-1 ? x+1 : x)];
     }
 
-    LRU(process, sys_time) {
+    LRU(process) {
+        this.sys_time++;
+
         if(this.check(process)){
-            return [this.ram.map((x) => x), this.disk.map((x) => x)];
+            this.utilization_map[process.id] = this.sys_time;
+            return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x!=-1 ? x+1 : x)];
         }
 
         if(this.disk[process.id] == -1){
@@ -117,8 +120,45 @@ export default class MemoryScheduler {
             this.n_disk++;
         }
 
-        
+        let find = -1;
+        for(let i = 0 ; i < 50; i++){
+            if(this.ram[i] == -1){
+                let j = i;
+                while(this.ram[j] == -1 && j < 50) j++;
+                if(j - i >= process.n_pages){
+                    find = i;
+                    break;
+                }
+            }
+        }
 
+        if(find == -1){
+            let need = process.n_pages, cap = 0;
+            while(need > cap){
+                let inside = this.ram.filter((x) => x != -1);
+                let rem = 9999999;
 
+                for(let i = 0; i < inside.length; i++){
+                    if(this.utilization_map[inside[i]] < rem){
+                        rem = this.utilization_map[inside[i]];
+                    }
+                }
+
+                for(let i = 0; i < 50; i++){
+                    if(this.ram[i] == rem){
+                        this.ram[i] = -1;
+                    }
+                }                
+                cap = this.max_space();
+            }
+
+            this.fill(process.id, process.n_pages);
+            this.utilization_map[process.id] = this.sys_time;
+        } else {
+            this.fill(process.id, process.n_pages);
+            this.utilization_map[process.id] = this.sys_time;
+        }
+
+        return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x!=-1 ? x+1 : x)];
     }
 }

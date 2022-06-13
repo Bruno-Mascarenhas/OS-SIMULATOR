@@ -40,7 +40,7 @@ function FIFO(processes, memory_scheduler) {
             }
             let tmp = Object.create(processes[i]);
             tmp.id -= 1;
-            let x = mem_scheduler.manage(tmp, aux2);
+            let x = mem_scheduler.manage(tmp);
 
             for(var j = aux1; j < aux2; j++){
                 processTime.push([processes[i].id,"green"]); //adiciona as cordenadas do primeiro processo no array
@@ -64,7 +64,7 @@ function FIFO(processes, memory_scheduler) {
             }
             let tmp = Object.create(processes[i]);
             tmp.id -= 1;
-            let x = mem_scheduler.manage(tmp, aux2);
+            let x = mem_scheduler.manage(tmp);
 
             for(var j = aux1; j < aux2; j++){
                 //adicionando coordenadas do processo no array
@@ -144,7 +144,7 @@ function SJF(processes, memory_scheduler) {
 
             let tmp = Object.create(processes[i]);
             tmp.id -= 1;
-            let x = mem_scheduler.manage(tmp, aux2);
+            let x = mem_scheduler.manage(tmp);
 
             for(var j = aux1; j < aux2; j++){
                 processTime.push([processes[i].id,"green"]); //adiciona as cordenadas do primeiro processo no array
@@ -169,7 +169,7 @@ function SJF(processes, memory_scheduler) {
 
             let tmp = Object.create(processes[i]);
             tmp.id -= 1;
-            let x = mem_scheduler.manage(tmp, aux2);
+            let x = mem_scheduler.manage(tmp);
 
             for(var j = aux1; j < aux2; j++){
                 //adicionando coordenadas do processo no array
@@ -235,7 +235,7 @@ function RoundRobin(processes, quantum, overload, memory_scheduler) {
 
             let tmp = Object.create(process);
             tmp.id -= 1;
-            let x = mem_scheduler.manage(tmp, sys_time);
+            let x = mem_scheduler.manage(tmp);
 
             for(let i=sys_time; i<sys_time + quantum; i++){
                 times.push([process.id, "green"]);
@@ -254,7 +254,7 @@ function RoundRobin(processes, quantum, overload, memory_scheduler) {
 
             let tmp = Object.create(process);
             tmp.id -= 1;
-            let x = mem_scheduler.manage(tmp, sys_time);
+            let x = mem_scheduler.manage(tmp);
 
             for(let i=sys_time; i<sys_time + process.executionTime; i++){
                 times.push([process.id, "green"]);
@@ -335,7 +335,7 @@ function EDF(processes, quantum, overload, memory_scheduler) {
 
                 let tmp = Object.create(cur);
                 tmp.id -= 1;
-                let x = mem_scheduler.manage(tmp, sys_time);
+                let x = mem_scheduler.manage(tmp);
 
                 for(let i=sys_time; i<sys_time + quantum; i++){
                     mem_array.push(x);
@@ -355,7 +355,7 @@ function EDF(processes, quantum, overload, memory_scheduler) {
             } else {
                 let tmp = Object.create(cur);
                 tmp.id -= 1;
-                let x = mem_scheduler.manage(tmp, sys_time);
+                let x = mem_scheduler.manage(tmp);
 
                 processes_time[cur.id].push([sys_time, sys_time + cur.executionTime]);
     
@@ -389,9 +389,9 @@ function EDF(processes, quantum, overload, memory_scheduler) {
     return [times, turnaround, mem_array];
 }
 
-let x = new Process(1,0,4,7,1,10);
-let y = new Process(2,1,2,6,1,10);
-let z = new Process(3,1,2,7,1,10);
+let x = new Process(1,0,4,7,1,20);
+let y = new Process(2,1,2,6,1,20);
+let z = new Process(3,1,2,7,1,20);
 
 //RoundRobin([y,x],2,1,'FIFO')
 //SJF([d,c,b,a]);
