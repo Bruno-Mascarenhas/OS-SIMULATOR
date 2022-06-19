@@ -136,19 +136,23 @@ export default class MemoryScheduler {
             let need = process.n_pages, cap = 0;
             while(need > cap){
                 let inside = this.ram.filter((x) => x != -1);
-                let rem = 9999999;
+                let rem = 9999999, pid = -1;
 
                 for(let i = 0; i < inside.length; i++){
                     if(this.utilization_map[inside[i]] < rem){
                         rem = this.utilization_map[inside[i]];
+                        pid = inside[i];
                     }
                 }
 
                 for(let i = 0; i < 50; i++){
-                    if(this.ram[i] == rem){
+                    if(this.ram[i] == pid){
                         this.ram[i] = -1;
                     }
-                }                
+                }
+                
+                this.utilization_map[pid] = -1;
+
                 cap = this.max_space();
             }
 

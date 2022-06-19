@@ -62,6 +62,7 @@ function FIFO(processes, memory_scheduler) {
                 //adiciona o turnaround do processo no array
                 partial.push(processes[i].executionTime + partial[i-1]);
             }
+
             let tmp = Object.create(processes[i]);
             tmp.id -= 1;
             let x = mem_scheduler.manage(tmp);
@@ -289,7 +290,7 @@ function EDF(processes, quantum, overload, memory_scheduler) {
     let mem_scheduler = new MemoryScheduler(memory_scheduler, processes.length);
 
     let pq = new PriorityQueue((x, y) => x.deadline < y.deadline);
-    
+
     while(processes.length > 0 || pq.size() > 0) {
         if(processes.length > 0) {
             let process = processes[0];
@@ -359,7 +360,7 @@ function EDF(processes, quantum, overload, memory_scheduler) {
 
                 processes_time[cur.id].push([sys_time, sys_time + cur.executionTime]);
     
-                for(let i=sys_time, j = 0; i<sys_time + cur.executionTime; i++){
+                for(let i=sys_time; i<sys_time + cur.executionTime; i++){
                     mem_array.push(x);
                     if(cur.deadline >= i)
                         times.push([cur.id, "green"]);
@@ -389,12 +390,19 @@ function EDF(processes, quantum, overload, memory_scheduler) {
     return [times, turnaround, mem_array];
 }
 
-let x = new Process(1,0,4,7,1,20);
-let y = new Process(2,1,2,6,1,20);
-let z = new Process(3,1,2,7,1,20);
+// let x = new Process(1,0,4,7,1,20);
+// let y = new Process(2,1,2,6,1,20);
+// let z = new Process(3,1,2,7,1,20);
 
-//RoundRobin([y,x],2,1,'FIFO')
-//SJF([d,c,b,a]);
-EDF([x,y,z],2,1,'LRU')
+let x = new Process(1,0,4,7,1,20);
+let y = new Process(2,2,2,5,1,20);
+let z = new Process(3,4,1,8,1,20);
+let k = new Process(4,6,3,10,1,20);
+
+// SJF([x,y,z,k],'FIFO');
+// FIFO([x,y,z,k],'FIFO')
+EDF([x,y,z,k],2,1,'LRU')
+//  RoundRobin([y,x],2,1,'FIFO')
+
 
 export {FIFO,SJF,RoundRobin,EDF}

@@ -3,7 +3,6 @@ import { FIFO, SJF, RoundRobin, EDF } from './main.js'
 
 drawMemoryTable()
 drawDiskTable()
-drawPageTable()
 
 // Cria 1 formulario para cada processo
 // ******************************************************************
@@ -37,11 +36,9 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
     let memoria = document.getElementById('algoritimoMemoria')
     let escalonamento = algoritimo.options[algoritimo.selectedIndex].value;
     let algoritimoMemoria = memoria.options[memoria.selectedIndex].value;
-    //console.log(value)
-    //console.log(data)
+
     let processos = []
     for (let i = 1; i <= data.n_processos; i++) {
-        //processos.push(new Process(+eval('data.chegada'+i),+eval('data.execucao'+i),+eval('data.deadline'+i),+eval('data.prioridade'+i)));
         processos.push(new Process(+i, +eval('data.chegada' + i), +eval('data.execucao' + i), +eval('data.deadline' + i), +eval('data.prioridade' + i), +eval('data.n_paginas' + i)));
     }
     let time = []
@@ -62,8 +59,6 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
             [time, turnaround,memory] = EDF(processos, eval(data.quantum), eval(data.sobrecarga),algoritimoMemoria)
             break;
     }
-    // console.log(processos[0].n_pages)
-    // console.log(escalonamento)
     
 
     document.getElementById("turnAround").textContent = `Turnaround = ${turnaround}`;
@@ -79,65 +74,7 @@ function start(time, nProcessos, processos,memory) {
     console.log("memoria é : "+memory)
     // Variaveis do sistema
     // ************************************************
-    // let nProcessos = 4;
     const animatioDelay = 0.5;
-
-    // let time = [
-    //     [1, 'green'],
-    //     [1, 'green'],
-    //     [1, 'red'],
-    //     [2, 'green'],
-    //     [2, 'green'],
-    //     [3, 'green'],
-    //     [3, 'green'],
-    //     [3, 'green'],
-    //     [3, 'red'],
-    //     [4, 'green'],
-    // ]
-    // ************************************************
-
-    // let vetorMemoria = [
-    //     [
-    //         [
-    //             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1,
-    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    //             -1, -1, -1, -1, -1, -1
-    //         ],
-    //         [1, -1, -1]
-    //     ],
-    //     [
-    //         [
-    //             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    //             1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1,
-    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    //             -1, -1, -1, -1, -1, -1
-    //         ],
-    //         [1, 2, -1]
-    //     ],
-    //     [
-    //         [
-    //             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    //             1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
-    //             2, 2, 2, 2, 2, 2, 2, 2, -1, -1, -1,
-    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    //             -1, -1, -1, -1, -1, -1
-    //         ],
-    //         [1, 2, 3]
-    //     ],
-    //     [
-    //         [
-    //             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    //             1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
-    //             2, 2, 2, 2, 2, 2, 2, 2, -1, -1, -1,
-    //             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    //             -1, -1, -1, -1, -1, -1
-    //         ],
-    //         [3, 2, 1]
-    //     ]
-    // ]
 
     let tempoTotal = time.length;
     let tempoAtual = 0;
@@ -180,7 +117,6 @@ function start(time, nProcessos, processos,memory) {
 
     function changeColor(nProcesso, tempo, cor) {
         document.getElementById(nProcesso + "." + tempo).style.backgroundColor = cor;
-        // document.getElementById("1.1").style.borderRightColor = "pink";
     }
 
     function handleMemoria(memoriaDisco) {
@@ -221,7 +157,6 @@ function drawMemoryTable() {
         for (let j = 0; j < 5; j++) {
             let tableCell = document.createElement("td");
             tableCell.setAttribute("id", j * 10 + i);
-            //tableCell.innerText = j * 10 + i
             tableRow.appendChild(tableCell);
         }
         memoryTable.appendChild(tableRow);
@@ -241,27 +176,3 @@ function drawDiskTable() {
         diskTable.appendChild(tableRow);
     }
 }
-function drawPageTable() {
-    let pageTable = document.getElementById("page");
-    for (let i = 0; i < 8; i++) {
-        let tableRow = document.createElement("tr");
-
-        for (let j = 0; j < 3; j++) {
-            let tableCell = document.createElement("td");
-            tableCell.setAttribute("id", `p${i}.${j}`);
-            if (j == 0) {
-                tableCell.classList.add('number')
-                tableCell.innerText = i
-            }
-            if (j == 2) {
-                tableCell.classList.add('bitValid')
-            }
-            tableRow.appendChild(tableCell);
-        }
-        pageTable.appendChild(tableRow);
-    }
-}
-
-
-
-
