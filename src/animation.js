@@ -46,22 +46,22 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
     let memory = []
     switch (escalonamento) {
         case 'FIFO':
-            [time, turnaround,memory] = FIFO(processos,algoritimoMemoria)
+            [time, turnaround, memory] = FIFO(processos, algoritimoMemoria)
             break;
         case 'SJF':
-            [time, turnaround,memory] = SJF(processos,algoritimoMemoria)
+            [time, turnaround, memory] = SJF(processos, algoritimoMemoria)
             break;
         case 'Round Robin':
-            [time, turnaround,memory] = RoundRobin(processos, eval(data.quantum), eval(data.sobrecarga),algoritimoMemoria)
+            [time, turnaround, memory] = RoundRobin(processos, eval(data.quantum), eval(data.sobrecarga), algoritimoMemoria)
             break;
         case 'EDF':
-            [time, turnaround,memory] = EDF(processos, eval(data.quantum), eval(data.sobrecarga),algoritimoMemoria)
+            [time, turnaround, memory] = EDF(processos, eval(data.quantum), eval(data.sobrecarga), algoritimoMemoria)
             break;
     }
-    
+
 
     document.getElementById("turnAround").textContent = `Turnaround = ${turnaround}`;
-    start(time, data.n_processos, processos,memory);
+    start(time, data.n_processos, processos, memory, data.velocidade);
 })
 
 
@@ -69,15 +69,18 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
 
 
 // Animação
-function start(time, nProcessos, processos,memory) {
+function start(time, nProcessos, processos, memory, velocidade) {
 
     const botao = document.getElementById('botao')
     botao.disabled = true
 
+    const velocidadeRange = document.getElementById('velocidade')
+    velocidadeRange.disabled = true
+
 
     // Variaveis do sistema
     // ************************************************
-    const animatioDelay = 0.5;
+    const animatioDelay = 2.5/eval(velocidade);
 
     let tempoTotal = time.length;
     let tempoAtual = 0;
@@ -95,6 +98,7 @@ function start(time, nProcessos, processos,memory) {
         if (tempoAtual == tempoTotal) {
             clearInterval(myInterval);
             botao.disabled = false
+            velocidadeRange.disabled = false
         }
     }
 
@@ -136,10 +140,10 @@ function start(time, nProcessos, processos,memory) {
 
         for (let i = 0; i < disco.length; i++) {
             if (disco[i] == -1) {
-                document.getElementById(`d${i+1}`).innerText = ""
+                document.getElementById(`d${i + 1}`).innerText = ""
             }
             else {
-                document.getElementById(`d${i+1}`).innerText = disco[i]
+                document.getElementById(`d${i + 1}`).innerText = disco[i]
             }
         }
     }
