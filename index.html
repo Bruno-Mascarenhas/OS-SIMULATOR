@@ -39,14 +39,22 @@
                         <label for="floatingInput">Número de Processos</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input name="quantum" type="number" class="form-control" id="floatingPassword">
-                        <label for="floatingPassword">Quantum</label>
+                        <input name="quantum" type="number" class="form-control" id="quantum">
+                        <label for="quantum">Quantum</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input name="sobrecarga" type="number" class="form-control" id="floatingPassword">
-                        <label for="floatingPassword">Sobrecarga</label>
+                        <input name="sobrecarga" type="number" class="form-control" id="sobrecarga">
+                        <label for="sobrecarga">Sobrecarga</label>
                     </div>
-                    <button type="submit" class="btn-1 btn btn-primary mb-3">Simular</button>
+                    <button type="submit" class="btn-1 btn btn-primary mb-3" id="botao">Simular</button>
+                </div>
+                <div class="container shadow p-4">
+                    <div class="form-floating ">
+                        <select class="form-select" id="example">
+                            <option value=0>Customizado</option>
+                        </select>
+                        <label for="example">Exemplo</label>
+                    </div>
                 </div>
             </div>
             <div class="col">
@@ -95,6 +103,7 @@
 
     <script type="module" src="/src/animation.js"></script>
     <script src="/src/components.js"></script>
+    <script type="module" src="/src/examples.js"></script>
 </body>
 
 </html>

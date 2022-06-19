@@ -1,0 +1,87 @@
+[
+    {
+        "escalonamento": "FIFO",
+        "memoria": "FIFO",
+        "numero_procesos": 2,
+        "quantum": 2,
+        "sobrecarga": 3,
+        "processos": [
+            {
+                "chegada": 1,
+                "execucao": 2,
+                "deadline": "",
+                "prioridade": "",
+                "n_paginas": 5
+            },
+            {
+                "chegada": 3,
+                "execucao": 5,
+                "deadline": "",
+                "prioridade": "",
+                "n_paginas": 10
+            }
+        ]
+    },
+
+    {
+        "escalonamento": "SJF",
+        "memoria": "LRU",
+        "numero_procesos": 2,
+        "quantum": 2,
+        "sobrecarga": 3,
+        "processos": [
+            {
+                "chegada": 1,
+                "execucao": 2,
+                "deadline": "",
+                "prioridade": "",
+                "n_paginas": 5
+            },
+            {
+                "chegada": 3,
+                "execucao": 5,
+                "deadline": "",
+                "prioridade": "",
+                "n_paginas": 10
+            }
+        ]
+    },
+    
+    {
+        "escalonamento": "EDF",
+        "memoria": "LRU",
+        "numero_procesos": 4,
+        "quantum": 2,
+        "sobrecarga": 1,
+        "processos": [
+            {
+                "chegada": 0,
+                "execucao": 4,
+                "deadline": 7,
+                "prioridade": 1,
+                "n_paginas": 20
+            },
+            {
+                "chegada":2,
+                "execucao": 2,
+                "deadline": 5,
+                "prioridade": 1,
+                "n_paginas": 20
+            },
+            {
+                "chegada": 4,
+                "execucao": 1,
+                "deadline": 8,
+                "prioridade": 1,
+                "n_paginas": 20
+            },
+            {
+                "chegada": 6,
+                "execucao": 3,
+                "deadline": 10,
+                "prioridade": 1,
+                "n_paginas": 20
+            }
+        ]
+    }
+]

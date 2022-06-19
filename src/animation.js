@@ -70,6 +70,11 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
 
 // Animação
 function start(time, nProcessos, processos,memory) {
+
+    const botao = document.getElementById('botao')
+    botao.disabled = true
+
+
     // Variaveis do sistema
     // ************************************************
     const animatioDelay = 0.5;
@@ -89,6 +94,7 @@ function start(time, nProcessos, processos,memory) {
 
         if (tempoAtual == tempoTotal) {
             clearInterval(myInterval);
+            botao.disabled = false
         }
     }
 
