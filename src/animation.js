@@ -44,7 +44,6 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
     let time = []
     let turnaround = 0
     let memory = []
-    console.log("memoria: " +algoritimoMemoria)
     switch (escalonamento) {
         case 'FIFO':
             [time, turnaround,memory] = FIFO(processos,algoritimoMemoria)
@@ -71,7 +70,6 @@ document.getElementById('formInput').addEventListener('submit', (e) => {
 
 // Animação
 function start(time, nProcessos, processos,memory) {
-    console.log("memoria é : "+memory)
     // Variaveis do sistema
     // ************************************************
     const animatioDelay = 0.5;
