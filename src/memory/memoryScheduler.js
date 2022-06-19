@@ -18,6 +18,12 @@ export default class MemoryScheduler {
         }
     }
 
+    //retorna o estado atual, utilizada quando o tempo está ocioso (cor white)
+    blank() {
+        return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x)]
+    }
+
+    //retorna true se o processo já está inteiramente na memória ram
     check(process) {
         let ok = 0;
         for(let i = 0; i < 50; i++){
@@ -33,6 +39,7 @@ export default class MemoryScheduler {
         return ok;
     }
 
+    //retorna o espaço disponível na memória ram
     max_space() {
         let max = -1;
         for(let i = 0; i < 50; i++){
@@ -45,6 +52,7 @@ export default class MemoryScheduler {
         return max;
     }
 
+    //preenche a memória ram com o processo
     fill(id, n_pages) {
         let idx;
         for(let i = 0; i < 50; i++){
@@ -64,11 +72,13 @@ export default class MemoryScheduler {
     }
 
     FIFO(process) {
+        //se o processo já está na memória ram, não faz nada
         if(this.check(process)){
             return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x)];
         }
 
-        if(this.disk[process.id] == -1){
+        //verifica se o processo já foi executado alguma vez, caso contrário ele é adicionado no disco
+        if(!this.disk.includes(process.id + 1)){
             this.disk[this.n_disk] = process.id + 1;
             this.n_disk++;
         }
@@ -85,6 +95,8 @@ export default class MemoryScheduler {
             }
         }
 
+        //caso não tenha espaço na memória ram, o processo do início da fila é removido do disco
+        //e o processo atual é adicionado na memória ram
         if(find == -1){
             let need = process.n_pages, cap = 0;
             while(need > cap){
@@ -100,6 +112,7 @@ export default class MemoryScheduler {
             this.fill(process.id, process.n_pages);
             this.queue.push(process.id);
         } else {
+        //caso tenha espaço na memória ram, o processo atual é adicionado na memória ram diretamente
             this.fill(process.id, process.n_pages);
             this.queue.push(process.id);
         }
@@ -110,12 +123,14 @@ export default class MemoryScheduler {
     LRU(process) {
         this.sys_time++;
 
+        //se o processo já está na memória ram, não faz nada
         if(this.check(process)){
             this.utilization_map[process.id] = this.sys_time;
             return [this.ram.map((x) => x!=-1 ? x+1 : x), this.disk.map((x) => x)];
         }
 
-        if(this.disk[process.id] == -1){
+        //verifica se o processo já foi executado alguma vez, caso contrário ele é adicionado no disco
+        if(!this.disk.includes(process.id + 1)){
             this.disk[this.n_disk] = process.id + 1;
             this.n_disk++;
         }
@@ -132,6 +147,8 @@ export default class MemoryScheduler {
             }
         }
 
+        //caso não tenha espaço na memória ram, o processo que foi utilizado a mais tempo 
+        //(o mais antigo sem acesso) é removido da memória ram e o processo atual é adicionado
         if(find == -1){
             let need = process.n_pages, cap = 0;
             while(need > cap){
@@ -159,6 +176,7 @@ export default class MemoryScheduler {
             this.fill(process.id, process.n_pages);
             this.utilization_map[process.id] = this.sys_time;
         } else {
+        //caso tenha espaço na memória ram, o processo atual é adicionado na memória ram diretamente
             this.fill(process.id, process.n_pages);
             this.utilization_map[process.id] = this.sys_time;
         }

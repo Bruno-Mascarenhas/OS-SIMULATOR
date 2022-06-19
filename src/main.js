@@ -4,22 +4,15 @@ import MemoryScheduler from './memory/memoryScheduler.js';
 
 //First In FIrst Out
 function FIFO(processes, memory_scheduler) {
-    //Nesse caso o quantum e o overload não são necessários.
-    //Ordena os processos por tempo de chegada
     let mem_array = [];
-
+    
     memory_scheduler = memory_scheduler.trim()
     let mem_scheduler = new MemoryScheduler(memory_scheduler, processes.length);
-
-    console.log("Processos antes da ordenação");
-    console.table(processes); //printa em uma tabela os processos recebidos
-
+    
+    //Ordena os processos por tempo de chegada
     processes.sort((x, y) => {
         return x.arrive - y.arrive;
     });
-
-    console.log("Processos depois da ordenação");
-    console.table(processes);
 
     //variáveis para a posição inicial e final de cada processo
     var processTime = [];
@@ -35,7 +28,7 @@ function FIFO(processes, memory_scheduler) {
             if(aux1 != 0){
                 for(var j = 0; j < aux1; j++){
                     processTime.push([i+1,"white"]); //adiciona as cordenadas em branco no array
-                    mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
+                    mem_array.push(mem_scheduler.blank());
                 }
             }
             let tmp = Object.create(processes[i]);
@@ -55,7 +48,7 @@ function FIFO(processes, memory_scheduler) {
             } else { //quando o processo anterior termina antes do atual chegar
                 for(var j = aux2; j < processes[i].arrive; j++){
                     processTime.push([i+1,"white"]); //adiciona as cordenadas em branco no array
-                    mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
+                    mem_array.push(mem_scheduler.blank());
                 }
                 aux1 = processes[i].arrive;
                 aux2 = aux1 + processes[i].executionTime;
@@ -82,26 +75,15 @@ function FIFO(processes, memory_scheduler) {
 
     //turnaround médio
     var turnaround = sum/processes.length;
-
-    console.log("Partial: ",partial);
-    console.log("Sum: ",sum);
-    console.log("Process Time: ",processTime);
-    console.log("Trunaround: ",turnaround);
-    console.log(processTime);
-
     return [processTime,turnaround,mem_array];
 }
 
 //Shortest Job First
 function SJF(processes, memory_scheduler) {
-    //Nesse caso o quantum e o overload não são necessários.
     let mem_array = [];
 
     memory_scheduler = memory_scheduler.trim()
     let mem_scheduler = new MemoryScheduler(memory_scheduler, processes.length);
-
-    console.log("Processos antes da ordenação");
-    console.table(processes); //printa em uma tabela os processos recebidos
 
     //Ordena os processos por tempo de chegada.
     processes.sort((x, y) => {
@@ -128,9 +110,6 @@ function SJF(processes, memory_scheduler) {
         }
     }
 
-    console.log("Processos depois da ordenação");
-    console.table(processes);
-
     for(var i = 0; i<processes.length; i++){
         if(i == 0){
             aux1 = processes[i].arrive;
@@ -139,7 +118,7 @@ function SJF(processes, memory_scheduler) {
             if(aux1 != 0){
                 for(var j = 0; j < aux1; j++){
                     processTime.push([i+1,"white"]); //adiciona as cordenadas do primeiro processo no array
-                    mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
+                    mem_array.push(mem_scheduler.blank());
                 }
             }
 
@@ -160,7 +139,7 @@ function SJF(processes, memory_scheduler) {
             } else { //quando o processo anterior termina antes do atual chegar
                 for(var j = aux2; j < processes[i].arrive; j++){
                     processTime.push([i+1,"white"]); //adiciona as cordenadas em branco no array
-                    mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
+                    mem_array.push(mem_scheduler.blank());
                 }
                 aux1 = processes[i].arrive;
                 aux2 = aux1 + processes[i].executionTime;
@@ -187,29 +166,26 @@ function SJF(processes, memory_scheduler) {
 
     //turnaround médio
     var turnaround = sum/processes.length;
-
-    console.log("Partial: ",partial);
-    console.log("Sum: ",sum);
-    console.log("Process Time: ",processTime);
-    console.log("Trunaround: ",turnaround);
-    console.log(processTime);
-
     return [processTime,turnaround,mem_array];
 }
 
 function RoundRobin(processes, quantum, overload, memory_scheduler) {
+    //semelhante ao fifo, porém é preemptivo (considera quantum e overload)
     let sys_time = 0;
     let processes_time = new Array(processes.length+1).fill(0).map((x) => new Array().fill(0));
     let processes_bkp = processes.map((x) => x);
     let times = []
     let mem_array = [];
 
+    //inicializa a classe que vai tratar da paginação
     memory_scheduler = memory_scheduler.trim()
     let mem_scheduler = new MemoryScheduler(memory_scheduler, processes.length);
 
     while(processes.length > 0) {
         let process = processes.shift();
 
+        //caso o primeiro processo da fila esteja com a chegada maior que o tempo do sistema atual
+        //vai esperar até que o tempo do sistema seja maior que a chegada do primeiro processo
         if(process.arrive > sys_time){
             processes.push(process);
             let find = 0;
@@ -225,11 +201,13 @@ function RoundRobin(processes, quantum, overload, memory_scheduler) {
                 }
                 for(let i=sys_time; i<tmp; i++){
                     times.push([1, "white"]);
-                    mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
+                    mem_array.push(mem_scheduler.blank());
                 }
                 sys_time = tmp;
             }
         }
+        //caso o tempo de execução do processo seja maior que o quantum do sistema
+        //vai executar o processo até o fim do quantum e adicionar o processo na fila de próximos
         else if(process.executionTime > quantum) {
             process.executionTime -= quantum;
             processes_time[process.id].push([sys_time, sys_time + quantum]);
@@ -251,6 +229,8 @@ function RoundRobin(processes, quantum, overload, memory_scheduler) {
             sys_time += quantum + overload;
             processes.push(process);
         } else {
+        //caso o tempo de execução do processo seja menor que o quantum do sistema
+            //vai executar o processo até o fim do tempo de execução e remover o processo da fila
             processes_time[process.id].push([sys_time, sys_time + process.executionTime]);
 
             let tmp = Object.create(process);
@@ -273,19 +253,18 @@ function RoundRobin(processes, quantum, overload, memory_scheduler) {
     });
 
     turnaround = turnaround / processes_bkp.length;
-    console.table(processes_time)
-    console.log(turnaround);
-    console.log(times);
     return [times, turnaround, mem_array];
 }
 
 function EDF(processes, quantum, overload, memory_scheduler) {
+//mantém uma fila ordenada pelo deadline (min_heap), porém é preemptivo (considera quantum e overload)
     let sys_time = 0;
     let processes_time = new Array(processes.length+1).fill(0).map((x) => new Array().fill(0));
     let processes_bkp = processes.map((x) => x);
     let times = [];
     let mem_array = [];
 
+    //inicializa a classe que vai tratar da paginação
     memory_scheduler = memory_scheduler.trim()
     let mem_scheduler = new MemoryScheduler(memory_scheduler, processes.length);
 
@@ -294,7 +273,8 @@ function EDF(processes, quantum, overload, memory_scheduler) {
     while(processes.length > 0 || pq.size() > 0) {
         if(processes.length > 0) {
             let process = processes[0];
-
+            //caso o primeiro processo da fila esteja com a chegada maior que o tempo do sistema atual
+            //vai esperar até que o tempo do sistema seja maior que a chegada do primeiro processo
             if(process.arrive > sys_time){
                 let find = 0;
                 for(let i=0; i<processes.length; i++){
@@ -309,13 +289,14 @@ function EDF(processes, quantum, overload, memory_scheduler) {
                     }
                     for(let i=sys_time; i<tmp; i++){
                         times.push([1, "white"]);
-                        mem_array.push([new Array(50).fill(-1),[-1,-1,-1]]);
+                        mem_array.push(mem_scheduler.blank());
                     }
                     sys_time = tmp;
                 }
             }
         }
-
+        //remove os processos que já podem executar da fila de processos
+        //e adiciona na min_heap de processos ordenada pelo deadline
         let to_rem = []
         for (let i = 0; i < processes.length; i++) {
             if(processes[i].arrive <= sys_time){
@@ -330,6 +311,9 @@ function EDF(processes, quantum, overload, memory_scheduler) {
 
         if(pq.size() > 0){
             let cur = pq.pop();
+            //caso haja processos na min_heap são tratados os casos de execução
+            //caso o tempo de execução do processo seja maior que o quantum do sistema
+            //vai executar o processo até o fim do quantum e adicionar o processo na heap de próximos novamente
             if(cur.executionTime > quantum) {
                 cur.executionTime -= quantum;
                 processes_time[cur.id].push([sys_time, sys_time + quantum]);
@@ -354,6 +338,8 @@ function EDF(processes, quantum, overload, memory_scheduler) {
                 sys_time += quantum + overload;
                 pq.push(cur);
             } else {
+            //caso o tempo de execução do processo seja menor que o quantum do sistema
+            //vai executar o processo até o fim do tempo de execução e remover o processo da min_heap
                 let tmp = Object.create(cur);
                 tmp.id -= 1;
                 let x = mem_scheduler.manage(tmp);
@@ -367,42 +353,30 @@ function EDF(processes, quantum, overload, memory_scheduler) {
                     else
                         times.push([cur.id, "gray"]);
                 }
-
                 sys_time += cur.executionTime;
             }
         }
     }
 
-     console.log(mem_array);
-     console.table(processes_time);
-     console.log(times);
     let turnaround = 0;
-
     processes_time.forEach((times,i) => {
         if(i != 0)
             turnaround += times[times.length-1][1] - processes_bkp[i-1].arrive;
     });
 
     turnaround = turnaround / processes_bkp.length;
-
-    console.log(turnaround);
-
     return [times, turnaround, mem_array];
 }
 
 // let x = new Process(1,0,4,7,1,20);
-// let y = new Process(2,1,2,6,1,20);
-// let z = new Process(3,1,2,7,1,20);
+// let y = new Process(2,2,2,5,1,20);
+// let z = new Process(3,4,1,8,1,20);
+// let k = new Process(4,6,3,10,1,20);
 
-let x = new Process(1,0,4,7,1,20);
-let y = new Process(2,2,2,5,1,20);
-let z = new Process(3,4,1,8,1,20);
-let k = new Process(4,6,3,10,1,20);
-
-// SJF([x,y,z,k],'FIFO');
-// FIFO([x,y,z,k],'FIFO')
-EDF([x,y,z,k],2,1,'LRU')
-//  RoundRobin([y,x],2,1,'FIFO')
+//SJF([x,y,z,k],'FIFO');
+//FIFO([x,y,z,k],'FIFO')
+//EDF([x,y,z,k],2,1,'LRU')
+//RoundRobin([y,x],2,1,'FIFO')
 
 
 export {FIFO,SJF,RoundRobin,EDF}
