@@ -2,27 +2,47 @@
     {
         "escalonamento": "FIFO",
         "memoria": "FIFO",
-        "numero_procesos": 2,
+        "numero_procesos": 5,
         "quantum": 2,
-        "sobrecarga": 3,
+        "sobrecarga": 1,
         "processos": [
             {
-                "chegada": 1,
-                "execucao": 2,
-                "deadline": "",
-                "prioridade": "",
-                "n_paginas": 5
+                "chegada": 0,
+                "execucao": 10,
+                "deadline": 10,
+                "prioridade": 3,
+                "n_paginas": 15
             },
             {
-                "chegada": 3,
-                "execucao": 5,
-                "deadline": "",
-                "prioridade": "",
-                "n_paginas": 10
+                "chegada": 0,
+                "execucao": 6,
+                "deadline": 10,
+                "prioridade": 5,
+                "n_paginas": 15
+            },
+            {
+                "chegada": 0,
+                "execucao": 2,
+                "deadline": 10,
+                "prioridade": 2,
+                "n_paginas": 15
+            },
+            {
+                "chegada": 0,
+                "execucao": 4,
+                "deadline": 10,
+                "prioridade": 1,
+                "n_paginas": 15
+            },
+            {
+                "chegada": 0,
+                "execucao": 8,
+                "deadline": 10,
+                "prioridade": 4,
+                "n_paginas": 15
             }
         ]
     },
-
     {
         "escalonamento": "SJF",
         "memoria": "LRU",
