@@ -151,7 +151,7 @@ function start(time, nProcessos, processos, memory, velocidade) {
     function setDeadlines() {
         processos.forEach((processo, i) => {
             if (processo.deadline != 0) {
-                document.getElementById((i + 1) + "." + processo.deadline).style.borderRight = "4px solid orange";
+                document.getElementById((i + 1) + "." + (processo.deadline+ processo.arrive)).style.borderRight = "4px solid orange";
             }
         })
     }
