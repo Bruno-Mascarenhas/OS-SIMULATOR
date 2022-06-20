@@ -48,7 +48,7 @@
         "memoria": "LRU",
         "numero_procesos": 2,
         "quantum": 2,
-        "sobrecarga": 3,
+        "sobrecarga": 1,
         "processos": [
             {
                 "chegada": 1,
