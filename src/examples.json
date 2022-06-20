@@ -53,14 +53,14 @@
             {
                 "chegada": 1,
                 "execucao": 2,
-                "deadline": "",
+                "deadline": 3,
                 "prioridade": "",
                 "n_paginas": 5
             },
             {
                 "chegada": 3,
                 "execucao": 5,
-                "deadline": "",
+                "deadline": 9,
                 "prioridade": "",
                 "n_paginas": 10
             }
