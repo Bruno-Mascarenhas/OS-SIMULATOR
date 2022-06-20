@@ -11,13 +11,11 @@
     "type": "git",
     "url": "git+https://github.com/Bruno-Mascarenhas/OS-SIMULATOR.git"
   },
-  "author": "Bruno Mascarenhas - Diego Costa - Caio",
+  "author": "Bruno Mascarenhas - Diego Costa - Caio Miranda",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Bruno-Mascarenhas/OS-SIMULATOR/issues"
   },
   "homepage": "https://github.com/Bruno-Mascarenhas/OS-SIMULATOR#readme",
-  "dependencies": {
-    "nunjucks": "^3.2.3"
-  }
+  "dependencies": {}
 }
