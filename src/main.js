@@ -287,7 +287,7 @@ function EDF(processes, quantum, overload, memory_scheduler) {
                     for(let i=0; i<processes.length; i++){
                         tmp = Math.min(tmp, processes[i].arrive);
                     }
-                    for(let i=sys_time; i<tmp; i++){
+                    for(let i=sys_time; i<tmp-1; i++){
                         times.push([1, "white"]);
                         mem_array.push(mem_scheduler.blank());
                     }
@@ -324,7 +324,7 @@ function EDF(processes, quantum, overload, memory_scheduler) {
 
                 for(let i=sys_time; i<sys_time + quantum; i++){
                     mem_array.push(x);
-                    if(cur.deadline >= i)
+                    if(cur.deadline + cur.arrive >= i)
                         times.push([cur.id, "green"]);
                     else
                         times.push([cur.id, "gray"]);
@@ -348,7 +348,7 @@ function EDF(processes, quantum, overload, memory_scheduler) {
     
                 for(let i=sys_time; i<sys_time + cur.executionTime; i++){
                     mem_array.push(x);
-                    if(cur.deadline >= i)
+                    if(cur.deadline + cur.arrive >= i)
                         times.push([cur.id, "green"]);
                     else
                         times.push([cur.id, "gray"]);
