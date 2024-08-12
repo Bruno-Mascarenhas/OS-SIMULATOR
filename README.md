@@ -1,7 +1,3 @@
-Here's the updated README with the additional sections for screenshots and file locations:
-
----
-
 # OS-Scheduler Simulator
 
 ## Overview
